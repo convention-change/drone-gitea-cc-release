@@ -38,23 +38,37 @@ func (p *Plugin) Exec() error {
 	drone_log.Debugf("use GiteaApiKey: %v\n", p.Config.GiteaApiKey)
 	drone_log.Debugf("use GiteaReleaseFiles: %v\n", p.Config.GiteaReleaseFiles)
 
-	if p.Drone.Repo.HttpUrl == "" {
-		return exit_cli.Format("Drone.Repo.HttpUrl is empty")
+	if p.Drone.Repo.SshUrl == "" {
+		return exit_cli.Format("Drone.Repo.SshUrl is empty")
 	}
 
 	repositoryClone, err := git.NewRepositoryClone(memory.NewStorage(), nil,
 		&goGit.CloneOptions{
-			URL: p.Drone.Repo.HttpUrl,
+			URL: p.Drone.Repo.SshUrl,
 		},
 	)
 	if err != nil {
-		return exit_cli.Format("clone repository HttpUrl %s \nerr: %v", p.Drone.Repo.HttpUrl, err)
+		drone_log.Warnf("clone repository SshUrl %s \nerr: %v", p.Drone.Repo.SshUrl, err)
+	} else {
+		commits, errLog := repositoryClone.Log("", "")
+		if errLog != nil {
+			drone_log.Warnf("get repositoryClone log err: %v", errLog)
+		} else {
+			drone_log.Infof("get repositoryClone commits len %d", len(commits))
+		}
 	}
-	commits, err := repositoryClone.Log("", "")
+
+	repositoryByPath, err := git.NewRepositoryByPath(p.Drone.Build.WorkSpace)
 	if err != nil {
-		return exit_cli.Format("get repository log err: %v", err)
+		return exit_cli.Format("at NewRepositoryByPath err: %v", err)
 	}
-	drone_log.Infof("get remote commits len %d", len(commits))
+	commits, errLog := repositoryByPath.Log("", "")
+	if errLog != nil {
+		drone_log.Warnf("get repositoryByPath log err: %v", errLog)
+	} else {
+		drone_log.Infof("get repositoryByPath commits len %d", len(commits))
+	}
+
 	return nil
 }
 
