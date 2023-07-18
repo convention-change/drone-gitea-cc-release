@@ -1,0 +1,28 @@
+{
+  "name": "drone-gitea-cc-release",
+  "version": "0.1.2",
+  "description": "release for https://docs.gitea.com/ and support log https://www.conventionalcommits.org/",
+  "directories": {
+    "doc": "doc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/convention-change/drone-gitea-cc-release.git"
+  },
+  "keywords": [
+    "go",
+    "drone",
+    "docker",
+    "devops"
+  ],
+  "author": {
+    "name": "sinlov",
+    "email": "sinlovgmppt@gmail.com",
+    "url": "https://github.com/convention-change/drone-gitea-cc-release"
+  },
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/convention-change/drone-gitea-cc-release/issues"
+  },
+  "homepage": "https://github.com/convention-change/drone-gitea-cc-release#readme"
+}
