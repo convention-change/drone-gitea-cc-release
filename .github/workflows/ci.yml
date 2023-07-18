@@ -49,9 +49,10 @@ jobs:
      - golang-ci
     uses: ./.github/workflows/docker-image-latest.yml
     if: ${{ github.event.pull_request.merged == true }}
+    secrets: inherit
     with:
       docker_hub_user: 'sinlov'
-      docker_image_name: 'drone-gitea-cc-release'
+      docker_image_name: 'sinlov/drone-gitea-cc-release'
       build_branch_name: 'main'
 
   docker-image-tag:
@@ -61,9 +62,10 @@ jobs:
      - golang-ci
     uses: ./.github/workflows/docker-image-tag.yml
     if: startsWith(github.ref, 'refs/tags/')
+    secrets: inherit
     with:
       docker_hub_user: 'sinlov'
-      docker_image_name: 'drone-gitea-cc-release'
+      docker_image_name: 'sinlov/drone-gitea-cc-release'
 
   go-release:
     name: go-release
@@ -73,6 +75,7 @@ jobs:
      - docker-image-tag
     uses: ./.github/workflows/go-release.yml
     if: startsWith(github.ref, 'refs/tags/')
+    secrets: inherit
     with:
       upload_artifact_name: go-release
 
@@ -84,6 +87,7 @@ jobs:
     name: deploy-tag
     uses: ./.github/workflows/deploy-tag.yml
     if: startsWith(github.ref, 'refs/tags/')
+    secrets: inherit
     with:
       prerelease: true
       tag_name: ${{ needs.version.outputs.tag_name }}
