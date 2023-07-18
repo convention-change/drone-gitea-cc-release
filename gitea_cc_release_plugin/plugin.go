@@ -2,8 +2,12 @@ package gitea_cc_release_plugin
 
 import (
 	"fmt"
+	goGit "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/storage/memory"
+	"github.com/sinlov-go/go-git-tools/git"
 	"github.com/sinlov/drone-info-tools/drone_info"
 	"github.com/sinlov/drone-info-tools/drone_log"
+	"github.com/sinlov/drone-info-tools/drone_urfave_cli_v2/exit_cli"
 	"log"
 	"math/rand"
 	"os"
@@ -33,6 +37,24 @@ func (p *Plugin) CleanResultEnv() error {
 func (p *Plugin) Exec() error {
 	drone_log.Debugf("use GiteaApiKey: %v\n", p.Config.GiteaApiKey)
 	drone_log.Debugf("use GiteaReleaseFiles: %v\n", p.Config.GiteaReleaseFiles)
+
+	if p.Drone.Repo.HttpUrl == "" {
+		return exit_cli.Format("Drone.Repo.HttpUrl is empty")
+	}
+
+	repositoryClone, err := git.NewRepositoryClone(memory.NewStorage(), nil,
+		&goGit.CloneOptions{
+			URL: p.Drone.Repo.HttpUrl,
+		},
+	)
+	if err != nil {
+		return exit_cli.Format("clone repository HttpUrl %s \nerr: %v", p.Drone.Repo.HttpUrl, err)
+	}
+	commits, err := repositoryClone.Log("", "")
+	if err != nil {
+		return exit_cli.Format("get repository log err: %v", err)
+	}
+	drone_log.Infof("get remote commits len %d", len(commits))
 	return nil
 }
 
