@@ -14,6 +14,9 @@ const (
 
 	EnvFileKey  = "PLUGIN_RELEASE_GITEA_FILES"
 	NameFileKey = "config.release_gitea_files"
+
+	EnvGitRemote  = "PLUGIN_RELEASE_GIT_REMOTE"
+	NameGitRemote = "config.release_git_remote"
 )
 
 // BindCliFlag
@@ -25,6 +28,8 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 
 		GiteaApiKey:       c.String(NameApiKey),
 		GiteaReleaseFiles: c.StringSlice(NameFileKey),
+
+		GitRemote: c.String(NameGitRemote),
 	}
 
 	drone_log.Debugf("args config.timeout_second: %v", config.TimeoutSecond)
@@ -70,6 +75,12 @@ func Flag() []cli.Flag {
 			Name:    NameFileKey,
 			Usage:   "release as files by glob pattern",
 			EnvVars: []string{EnvFileKey},
+		},
+		&cli.StringFlag{
+			Name:    NameGitRemote,
+			Usage:   "release as files by glob pattern",
+			EnvVars: []string{EnvGitRemote},
+			Value:   "origin",
 		},
 		// plugin end
 		//&cli.StringFlag{
