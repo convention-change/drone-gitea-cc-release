@@ -5,6 +5,7 @@ import (
 	goGit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/storage/memory"
 	"github.com/sinlov-go/go-git-tools/git"
+	"github.com/sinlov-go/go-git-tools/git_info"
 	"github.com/sinlov/drone-info-tools/drone_info"
 	"github.com/sinlov/drone-info-tools/drone_log"
 	"github.com/sinlov/drone-info-tools/drone_urfave_cli_v2/exit_cli"
@@ -67,6 +68,27 @@ func (p *Plugin) Exec() error {
 		drone_log.Warnf("get repositoryByPath log err: %v", errLog)
 	} else {
 		drone_log.Infof("get repositoryByPath commits len %d", len(commits))
+	}
+	tagLatestByCommitTime, errTagLatestByCommitTime := repositoryByPath.TagLatestByCommitTime()
+	if errTagLatestByCommitTime != nil {
+		drone_log.Warnf("get repositoryByPath TagLatestByCommitTime err: %v", errTagLatestByCommitTime)
+	} else {
+		drone_log.Infof("get repositoryByPath TagLatestByCommitTime.Name %v", tagLatestByCommitTime.Name)
+	}
+	commitLatestTagByTime, errCommitLatestTagByTime := repositoryByPath.CommitLatestTagByTime()
+	if errCommitLatestTagByTime != nil {
+		drone_log.Warnf("get repositoryByPath CommitLatestTagByTime err: %v", errCommitLatestTagByTime)
+	} else {
+		drone_log.Infof("get repositoryByPath CommitLatestTagByTime.Hash %v", commitLatestTagByTime.Hash.String())
+	}
+
+	fistRemoteInfo, err := git_info.RepositoryFistRemoteInfo(p.Drone.Build.WorkSpace, p.Config.GitRemote)
+	if err != nil {
+		drone_log.Warnf("at RepositoryFistRemoteInfo err: %v", err)
+	} else {
+		drone_log.Infof("fistRemoteInfo.Host %s", fistRemoteInfo.Host)
+		drone_log.Infof("fistRemoteInfo.User %s", fistRemoteInfo.User)
+		drone_log.Infof("fistRemoteInfo.Repo %s", fistRemoteInfo.Repo)
 	}
 
 	return nil

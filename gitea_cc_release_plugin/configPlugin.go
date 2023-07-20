@@ -29,5 +29,7 @@ type (
 
 		GiteaApiKey       string
 		GiteaReleaseFiles []string
+
+		GitRemote string
 	}
 )

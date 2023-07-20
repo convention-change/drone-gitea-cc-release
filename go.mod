@@ -6,7 +6,7 @@ require (
 	github.com/go-git/go-git/v5 v5.7.0
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.3
-	github.com/sinlov-go/go-git-tools v1.3.0
+	github.com/sinlov-go/go-git-tools v1.5.0
 	github.com/sinlov/drone-info-tools v1.23.0
 	github.com/stretchr/testify v1.8.4
 	github.com/urfave/cli/v2 v2.25.7
@@ -42,6 +42,7 @@ require (
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/skeema/knownhosts v1.1.1 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
+	github.com/whilp/git-urls v1.0.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
