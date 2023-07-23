@@ -3,7 +3,7 @@ module github.com/convention-change/drone-gitea-cc-release
 go 1.18
 
 require (
-	github.com/go-git/go-git/v5 v5.7.0
+	github.com/go-git/go-git/v5 v5.8.0
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.3
 	github.com/sinlov-go/go-git-tools v1.5.0
