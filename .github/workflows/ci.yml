@@ -42,6 +42,18 @@ jobs:
      - version
     uses: ./.github/workflows/golang-ci.yml
 
+  go-build-check-main:
+    name: go-build-check-main
+    needs:
+     - version
+     - golang-ci
+#    if: ${{ ( github.event_name == 'push' && github.ref == 'refs/heads/main' ) || github.base_ref == 'main' }}
+    if: ${{ github.event.pull_request.merged == true }}
+    uses: ./.github/workflows/go-release-platform.yml
+    secrets: inherit
+    with:
+      verison_name: latest
+
   docker-image-latest:
     name: docker-image-latest
     needs:
