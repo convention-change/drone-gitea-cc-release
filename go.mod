@@ -6,7 +6,7 @@ require (
 	github.com/go-git/go-git/v5 v5.8.1
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.3
-	github.com/sinlov-go/go-git-tools v1.5.0
+	github.com/sinlov-go/go-git-tools v1.8.1
 	github.com/sinlov/drone-info-tools v1.23.0
 	github.com/stretchr/testify v1.8.4
 	github.com/urfave/cli/v2 v2.25.7
