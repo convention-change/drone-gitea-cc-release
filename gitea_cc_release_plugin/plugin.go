@@ -86,9 +86,11 @@ func (p *Plugin) Exec() error {
 	if err != nil {
 		drone_log.Warnf("at RepositoryFistRemoteInfo err: %v", err)
 	} else {
+		drone_log.Infof("fistRemoteInfo.Scheme %s", fistRemoteInfo.Scheme)
 		drone_log.Infof("fistRemoteInfo.Host %s", fistRemoteInfo.Host)
 		drone_log.Infof("fistRemoteInfo.User %s", fistRemoteInfo.User)
 		drone_log.Infof("fistRemoteInfo.Repo %s", fistRemoteInfo.Repo)
+		drone_log.Infof("fistRemoteInfo.Repo %s", fistRemoteInfo.UserInfo)
 	}
 
 	return nil
