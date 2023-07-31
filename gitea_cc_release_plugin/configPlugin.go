@@ -6,6 +6,18 @@ const (
 	//msgTypeText        = "text"
 	//msgTypePost        = "post"
 	//msgTypeInteractive = "interactive"
+
+	EnvApiKey  = "PLUGIN_RELEASE_GITEA_API_KEY"
+	NameApiKey = "config.release_gitea_api_key"
+
+	EnvApiBaseUrl  = "PLUGIN_RELEASE_GITEA_BASE_URL"
+	NameApiBaseUrl = "config.release_gitea_base_url"
+
+	EnvFileKey  = "PLUGIN_RELEASE_GITEA_FILES"
+	NameFileKey = "config.release_gitea_files"
+
+	EnvGitRemote  = "PLUGIN_RELEASE_GIT_REMOTE"
+	NameGitRemote = "config.release_git_remote"
 )
 
 var (
@@ -27,6 +39,7 @@ type (
 		Debug         bool
 		TimeoutSecond uint
 
+		GiteaBaseUrl      string
 		GiteaApiKey       string
 		GiteaReleaseFiles []string
 

@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/convention-change/drone-gitea-cc-release/gitea_cc_release_plugin"
 	"github.com/sinlov/drone-info-tools/drone_info"
+	"github.com/sinlov/drone-info-tools/drone_log"
 	"github.com/sinlov/drone-info-tools/template"
 	"io/fs"
 	"math/rand"
@@ -24,20 +26,28 @@ const (
 	mockVersion          = "v0.0.0"
 	mockName             = "drone-gitea-cc-release"
 	keyEnvCiKeys         = "CI_KEYS"
-	keyPluginWebhook     = "PLUGIN_WEBHOOK"
 )
 
 var (
 	envDebug = false
 
-	envPluginWebhook = ""
-	envEnvKeys       []string
-	strData          []string
+	envEnvKeys     []string
+	strData        []string
+	envGiteaApiKey = ""
 )
 
 func envCheck(t *testing.T) bool {
+	drone_log.ShowLogLineNo(true)
+	// most CI system will set env CI to true
+	envCI := fetchOsEnvBool("CI", false)
+	if !envCI {
+		t.Logf("not in CI system, skip envCheck")
+		return false
+	}
+	t.Logf("check env for CI system")
 	mustSetEnvList := []string{
-		keyPluginWebhook,
+		gitea_cc_release_plugin.EnvApiBaseUrl,
+		gitea_cc_release_plugin.EnvApiKey,
 	}
 	for _, item := range mustSetEnvList {
 		if os.Getenv(item) == "" {
@@ -53,7 +63,7 @@ func init() {
 	template.RegisterSettings(template.DefaultFunctions)
 	envDebug = fetchOsEnvBool(drone_info.EnvKeyPluginDebug, false)
 
-	envPluginWebhook = fetchOsEnvStr(keyPluginWebhook, "")
+	envGiteaApiKey = fetchOsEnvStr(gitea_cc_release_plugin.EnvApiKey, "")
 	envEnvKeys = fetchOsEnvArray(keyEnvCiKeys)
 	for i := 0; i < 200; i++ {
 		strData = append(strData, randomStr(300))

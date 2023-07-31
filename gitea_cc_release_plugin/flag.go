@@ -8,17 +8,6 @@ import (
 	"os"
 )
 
-const (
-	EnvApiKey  = "PLUGIN_RELEASE_GITEA_API_KEY"
-	NameApiKey = "config.release_gitea_api_key"
-
-	EnvFileKey  = "PLUGIN_RELEASE_GITEA_FILES"
-	NameFileKey = "config.release_gitea_files"
-
-	EnvGitRemote  = "PLUGIN_RELEASE_GIT_REMOTE"
-	NameGitRemote = "config.release_git_remote"
-)
-
 // BindCliFlag
 // check args here
 func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Drone) (*Plugin, error) {
@@ -26,25 +15,21 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 		Debug:         c.Bool("config.debug"),
 		TimeoutSecond: c.Uint("config.timeout_second"),
 
+		GiteaBaseUrl:      c.String(NameApiBaseUrl),
 		GiteaApiKey:       c.String(NameApiKey),
 		GiteaReleaseFiles: c.StringSlice(NameFileKey),
 
 		GitRemote: c.String(NameGitRemote),
 	}
 
-	drone_log.Debugf("args config.timeout_second: %v", config.TimeoutSecond)
-
 	if config.Debug {
+		drone_log.ShowLogLineNo(true)
 		for _, e := range os.Environ() {
 			log.Println(e)
 		}
 	}
 
-	//if config.Webhook == "" {
-	//	err := fmt.Errorf("missing webhook, please set webhook env: %s", EnvWebHook)
-	//	drone_log.Error(err)
-	//	return nil, exit_cli.Err(err)
-	//}
+	drone_log.Debugf("args config.timeout_second: %v", config.TimeoutSecond)
 
 	// set default TimeoutSecond
 	if config.TimeoutSecond == 0 {
@@ -70,6 +55,12 @@ func Flag() []cli.Flag {
 			Usage:      "gitea api key",
 			HasBeenSet: false,
 			EnvVars:    []string{EnvApiKey},
+		},
+		&cli.StringFlag{
+			Name:       NameApiBaseUrl,
+			Usage:      "gitea base url",
+			HasBeenSet: false,
+			EnvVars:    []string{EnvApiBaseUrl},
 		},
 		&cli.StringSliceFlag{
 			Name:    NameFileKey,

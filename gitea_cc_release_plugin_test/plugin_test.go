@@ -25,12 +25,17 @@ func TestPlugin(t *testing.T) {
 	p.Config.Debug = envDebug
 
 	err := p.Exec()
-	//if nil == err {
-	//	t.Fatal("args [ webhook ] empty error should be catch!")
-	//}
-	//
-	//p.Config.Webhook = envPluginWebhook
-	//
+	if nil == err {
+		t.Fatalf("args [ %s ] empty error should be catch!", gitea_cc_release_plugin.EnvApiKey)
+	}
+
+	p.Config.GiteaApiKey = envGiteaApiKey
+
+	err = p.Exec()
+	if nil == err {
+		t.Fatalf("args [ %s ] empty error should be catch!", gitea_cc_release_plugin.EnvApiBaseUrl)
+	}
+
 	//err = p.Exec()
 	//if nil == err {
 	//	t.Fatal("args [ msg_type ] empty error should be catch!")
