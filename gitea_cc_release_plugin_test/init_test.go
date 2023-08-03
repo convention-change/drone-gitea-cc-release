@@ -29,11 +29,33 @@ const (
 )
 
 var (
-	envDebug = false
+	envDebug       = false
+	envProjectRoot = ""
+	envDroneProto  = "https"
 
-	envEnvKeys     []string
-	strData        []string
-	envGiteaApiKey = ""
+	envEnvKeys []string
+	strData    []string
+
+	envApiBaseUrl          = ""
+	envDroneHost           = ""
+	envDroneHostName       = ""
+	envDroneRemoteHost     = ""
+	envDroneRemoteOwner    = ""
+	envDroneRemoteRepoName = ""
+	envGiteaInsecure       = false
+	envGiteaApiKey         = ""
+
+	envGiteaFileExistsDo string
+	envGiteaDraft        bool
+	envGiteaPrerelease   bool
+	envGiteaTitle        string
+	envGiteaNote         string
+
+	envReleaseFiles  []string
+	envFilesChecksum []string
+
+	envNoteByConventionChange bool
+	envReadChangeLogFile      string
 )
 
 func envCheck(t *testing.T) bool {
@@ -47,7 +69,9 @@ func envCheck(t *testing.T) bool {
 	t.Logf("check env for CI system")
 	mustSetEnvList := []string{
 		gitea_cc_release_plugin.EnvApiBaseUrl,
-		gitea_cc_release_plugin.EnvApiKey,
+		gitea_cc_release_plugin.EnvGiteaApiKey,
+		"DRONE_HOST",
+		"DRONE_HOST_NAME",
 	}
 	for _, item := range mustSetEnvList {
 		if os.Getenv(item) == "" {
@@ -61,10 +85,36 @@ func envCheck(t *testing.T) bool {
 
 func init() {
 	template.RegisterSettings(template.DefaultFunctions)
-	envDebug = fetchOsEnvBool(drone_info.EnvKeyPluginDebug, false)
 
-	envGiteaApiKey = fetchOsEnvStr(gitea_cc_release_plugin.EnvApiKey, "")
+	projectRoot, err := getCurrentFolderPath()
+	if err == nil {
+		envProjectRoot = filepath.Dir(projectRoot)
+	}
+
+	envDebug = fetchOsEnvBool(drone_info.EnvKeyPluginDebug, false)
+	envDroneProto = fetchOsEnvStr("DRONE_PROTO", "https")
+	envDroneHost = fetchOsEnvStr("DRONE_HOST", "")
+	envDroneHostName = fetchOsEnvStr("DRONE_HOST_NAME", "")
+	envDroneRemoteHost = fetchOsEnvStr("DRONE_REMOTE_HOST", "")
+	envDroneRemoteOwner = fetchOsEnvStr("DRONE_REMOTE_OWNER", "")
+	envDroneRemoteRepoName = fetchOsEnvStr("DRONE_REMOTE_REPO_NAME", "")
+
+	envApiBaseUrl = fetchOsEnvStr(gitea_cc_release_plugin.EnvApiBaseUrl, "")
+	envGiteaInsecure = fetchOsEnvBool(gitea_cc_release_plugin.EnvGiteaInsecure, false)
+	envGiteaApiKey = fetchOsEnvStr(gitea_cc_release_plugin.EnvGiteaApiKey, "")
 	envEnvKeys = fetchOsEnvArray(keyEnvCiKeys)
+
+	envReleaseFiles = fetchOsEnvArray(gitea_cc_release_plugin.EnvReleaseFiles)
+	envFilesChecksum = fetchOsEnvArray(gitea_cc_release_plugin.EnvFilesChecksum)
+	envGiteaFileExistsDo = fetchOsEnvStr(gitea_cc_release_plugin.EnvFileExistsDo, gitea_cc_release_plugin.FileExistsDoFail)
+	envGiteaDraft = fetchOsEnvBool(gitea_cc_release_plugin.EnvDraft, true)
+	envGiteaPrerelease = fetchOsEnvBool(gitea_cc_release_plugin.EnvPrerelease, true)
+	envGiteaTitle = fetchOsEnvStr(gitea_cc_release_plugin.EnvTitle, "")
+	envGiteaNote = fetchOsEnvStr(gitea_cc_release_plugin.EnvNote, "")
+
+	envNoteByConventionChange = fetchOsEnvBool(gitea_cc_release_plugin.EnvNoteByConventionChange, false)
+	envReadChangeLogFile = fetchOsEnvStr(gitea_cc_release_plugin.EnvReadChangeLogFile, "CHANGELOG.md")
+
 	for i := 0; i < 200; i++ {
 		strData = append(strData, randomStr(300))
 	}

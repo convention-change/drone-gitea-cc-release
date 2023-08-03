@@ -1,1 +1,10 @@
 !testdata/
+
+md5sum.txt
+sha1sum.txt
+sha256sum.txt
+sha512sum.txt
+adler32sum.txt
+crc32sum.txt
+blake2bsum.txt
+blake2sum.txt

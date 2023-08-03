@@ -2,12 +2,16 @@ package gitea_cc_release_plugin
 
 import (
 	"fmt"
+	"github.com/convention-change/convention-change-log/changelog"
+	"github.com/convention-change/convention-change-log/convention"
 	"github.com/sinlov/drone-info-tools/drone_info"
 	"github.com/sinlov/drone-info-tools/drone_log"
 	"github.com/sinlov/drone-info-tools/drone_urfave_cli_v2/exit_cli"
+	droneStrTools "github.com/sinlov/drone-info-tools/tools/str_tools"
 	"log"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -40,13 +44,51 @@ func (p *Plugin) Exec() error {
 	}
 
 	if p.Config.GiteaApiKey == "" {
-		err := fmt.Errorf("missing git api key, please set env: %s", EnvApiKey)
+		err := fmt.Errorf("missing git api key, please set env: %s", EnvGiteaApiKey)
 		drone_log.Error(err)
 		return exit_cli.Err(err)
 	}
 
+	if !(droneStrTools.StrInArr(p.Config.GiteaFileExistsDo, supportFileExistsDoList)) {
+		return exit_cli.Format("release_gitea_file_exists_do type only support %v", supportFileExistsDoList)
+	}
+
 	drone_log.Debugf("use GiteaApiKey: %v\n", p.Config.GiteaApiKey)
-	drone_log.Debugf("use GiteaReleaseFiles: %v\n", p.Config.GiteaReleaseFiles)
+	drone_log.Debugf("use GiteaReleaseFileGlobs: %v\n", p.Config.GiteaReleaseFileGlobs)
+
+	rc, err := newReleaseClient(p.Drone, p.Config)
+	if err != nil {
+		drone_log.Error(err)
+		return exit_cli.Err(err)
+	}
+
+	if p.Config.NoteByConventionChange {
+
+		specFilePath := filepath.Join(p.Config.RootFolderPath, VersionRcFileName)
+		changeLogSpec, errChangeLogSpecByPath := convention.LoadConventionalChangeLogSpecByPath(specFilePath)
+		if errChangeLogSpecByPath != nil {
+			drone_log.Error(errChangeLogSpecByPath)
+			return exit_cli.Err(errChangeLogSpecByPath)
+		}
+		reader, errCC := changelog.NewReader(p.Config.ReadChangeLogFile, *changeLogSpec)
+		if errCC == nil {
+			rc.SetNote(reader.HistoryFirstContent())
+			rc.SetTitle(reader.HistoryFirstTagShort())
+		} else {
+			drone_log.Warnf("not found change log or other error: %v\n", errCC)
+		}
+	}
+
+	release, err := rc.buildRelease()
+	if err != nil {
+		drone_log.Error(err)
+		return exit_cli.Err(err)
+	}
+
+	if errUpload := rc.uploadFiles(release.ID); errUpload != nil {
+		drone_log.Error(errUpload)
+		return exit_cli.Err(errUpload)
+	}
 
 	return nil
 }
