@@ -95,8 +95,8 @@ func init() {
 	if err == nil {
 		envProjectRoot = filepath.Dir(projectRoot)
 	}
+	envDebug = fetchOsEnvBool(drone_info.EnvKeyPluginDebug, false) || fetchOsEnvBool(drone_info.EnvDroneBuildDebug, false)
 
-	envDebug = fetchOsEnvBool(drone_info.EnvKeyPluginDebug, false)
 	envDroneProto = fetchOsEnvStr("DRONE_PROTO", "https")
 	envDroneHost = fetchOsEnvStr("DRONE_HOST", "")
 	envDroneHostName = fetchOsEnvStr("DRONE_HOST_NAME", "")
