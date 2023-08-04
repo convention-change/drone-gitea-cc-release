@@ -14,7 +14,7 @@ var dronePlugin *gitea_cc_release_plugin.Plugin
 // GlobalBeforeAction
 // do command Action before flag global.
 func GlobalBeforeAction(c *cli.Context) error {
-	isDebug := c.Bool("config.debug")
+	isDebug := gitea_cc_release_plugin.IsBuildDebugOpen(c)
 	if isDebug {
 		drone_log.OpenDebug()
 	}
