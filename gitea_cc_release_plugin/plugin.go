@@ -2,16 +2,16 @@ package gitea_cc_release_plugin
 
 import (
 	"fmt"
-	goGit "github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/storage/memory"
-	"github.com/sinlov-go/go-git-tools/git"
-	"github.com/sinlov-go/go-git-tools/git_info"
+	"github.com/convention-change/convention-change-log/changelog"
+	"github.com/convention-change/convention-change-log/convention"
 	"github.com/sinlov/drone-info-tools/drone_info"
 	"github.com/sinlov/drone-info-tools/drone_log"
 	"github.com/sinlov/drone-info-tools/drone_urfave_cli_v2/exit_cli"
+	droneStrTools "github.com/sinlov/drone-info-tools/tools/str_tools"
 	"log"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -36,61 +36,58 @@ func (p *Plugin) CleanResultEnv() error {
 }
 
 func (p *Plugin) Exec() error {
-	drone_log.Debugf("use GiteaApiKey: %v\n", p.Config.GiteaApiKey)
-	drone_log.Debugf("use GiteaReleaseFiles: %v\n", p.Config.GiteaReleaseFiles)
 
-	if p.Drone.Repo.SshUrl == "" {
-		return exit_cli.Format("Drone.Repo.SshUrl is empty")
+	if p.Config.GiteaBaseUrl == "" {
+		err := fmt.Errorf("missing git base url, please set env: %s", EnvApiBaseUrl)
+		drone_log.Error(err)
+		return exit_cli.Err(err)
 	}
 
-	repositoryClone, err := git.NewRepositoryClone(memory.NewStorage(), nil,
-		&goGit.CloneOptions{
-			URL: p.Drone.Repo.SshUrl,
-		},
-	)
+	if p.Config.GiteaApiKey == "" {
+		err := fmt.Errorf("missing git api key, please set env: %s", EnvGiteaApiKey)
+		drone_log.Error(err)
+		return exit_cli.Err(err)
+	}
+
+	if !(droneStrTools.StrInArr(p.Config.GiteaFileExistsDo, supportFileExistsDoList)) {
+		return exit_cli.Format("release_gitea_file_exists_do type only support %v", supportFileExistsDoList)
+	}
+
+	drone_log.Debugf("use GiteaApiKey: %v\n", p.Config.GiteaApiKey)
+	drone_log.Debugf("use GiteaReleaseFileGlobs: %v\n", p.Config.GiteaReleaseFileGlobs)
+
+	rc, err := newReleaseClient(p.Drone, p.Config)
 	if err != nil {
-		drone_log.Warnf("clone repository SshUrl %s \nerr: %v", p.Drone.Repo.SshUrl, err)
-	} else {
-		commits, errLog := repositoryClone.Log("", "")
-		if errLog != nil {
-			drone_log.Warnf("get repositoryClone log err: %v", errLog)
+		drone_log.Error(err)
+		return exit_cli.Err(err)
+	}
+
+	if p.Config.NoteByConventionChange {
+
+		specFilePath := filepath.Join(p.Config.RootFolderPath, VersionRcFileName)
+		changeLogSpec, errChangeLogSpecByPath := convention.LoadConventionalChangeLogSpecByPath(specFilePath)
+		if errChangeLogSpecByPath != nil {
+			drone_log.Error(errChangeLogSpecByPath)
+			return exit_cli.Err(errChangeLogSpecByPath)
+		}
+		reader, errCC := changelog.NewReader(p.Config.ReadChangeLogFile, *changeLogSpec)
+		if errCC == nil {
+			rc.SetNote(reader.HistoryFirstContent())
+			rc.SetTitle(reader.HistoryFirstTagShort())
 		} else {
-			drone_log.Infof("get repositoryClone commits len %d", len(commits))
+			drone_log.Warnf("not found change log or other error: %v\n", errCC)
 		}
 	}
 
-	repositoryByPath, err := git.NewRepositoryByPath(p.Drone.Build.WorkSpace)
+	release, err := rc.buildRelease()
 	if err != nil {
-		return exit_cli.Format("at NewRepositoryByPath err: %v", err)
-	}
-	commits, errLog := repositoryByPath.Log("", "")
-	if errLog != nil {
-		drone_log.Warnf("get repositoryByPath log err: %v", errLog)
-	} else {
-		drone_log.Infof("get repositoryByPath commits len %d", len(commits))
-	}
-	tagLatestByCommitTime, errTagLatestByCommitTime := repositoryByPath.TagLatestByCommitTime()
-	if errTagLatestByCommitTime != nil {
-		drone_log.Warnf("get repositoryByPath TagLatestByCommitTime err: %v", errTagLatestByCommitTime)
-	} else {
-		drone_log.Infof("get repositoryByPath TagLatestByCommitTime.Name %v", tagLatestByCommitTime.Name)
-	}
-	commitLatestTagByTime, errCommitLatestTagByTime := repositoryByPath.CommitLatestTagByTime()
-	if errCommitLatestTagByTime != nil {
-		drone_log.Warnf("get repositoryByPath CommitLatestTagByTime err: %v", errCommitLatestTagByTime)
-	} else {
-		drone_log.Infof("get repositoryByPath CommitLatestTagByTime.Hash %v", commitLatestTagByTime.Hash.String())
+		drone_log.Error(err)
+		return exit_cli.Err(err)
 	}
 
-	fistRemoteInfo, err := git_info.RepositoryFistRemoteInfo(p.Drone.Build.WorkSpace, p.Config.GitRemote)
-	if err != nil {
-		drone_log.Warnf("at RepositoryFistRemoteInfo err: %v", err)
-	} else {
-		drone_log.Infof("fistRemoteInfo.Scheme %s", fistRemoteInfo.Scheme)
-		drone_log.Infof("fistRemoteInfo.Host %s", fistRemoteInfo.Host)
-		drone_log.Infof("fistRemoteInfo.User %s", fistRemoteInfo.User)
-		drone_log.Infof("fistRemoteInfo.Repo %s", fistRemoteInfo.Repo)
-		drone_log.Infof("fistRemoteInfo.Repo %s", fistRemoteInfo.UserInfo)
+	if errUpload := rc.uploadFiles(release.ID); errUpload != nil {
+		drone_log.Error(errUpload)
+		return exit_cli.Err(errUpload)
 	}
 
 	return nil
