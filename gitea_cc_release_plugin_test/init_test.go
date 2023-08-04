@@ -59,7 +59,12 @@ var (
 )
 
 func envCheck(t *testing.T) bool {
-	drone_log.ShowLogLineNo(true)
+
+	if envDebug {
+		drone_log.ShowLogLineNo(true)
+		drone_log.OpenDebug()
+	}
+
 	// most CI system will set env CI to true
 	envCI := fetchOsEnvBool("CI", false)
 	if !envCI {

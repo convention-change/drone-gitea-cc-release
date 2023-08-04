@@ -11,9 +11,14 @@ import (
 	"strings"
 )
 
+func IsBuildDebugOpen(c *cli.Context) bool {
+	return c.Bool("config.debug") || c.Bool(drone_info.NameCliStepsDebug)
+}
+
 // BindCliFlag
 // check args here
 func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Drone) (*Plugin, error) {
+	debug := IsBuildDebugOpen(c)
 
 	rootFolderPath := c.String(NameRootFolderPath)
 	if rootFolderPath == "" {
@@ -42,7 +47,7 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 	}
 
 	config := Config{
-		Debug:         c.Bool("config.debug"),
+		Debug:         debug,
 		TimeoutSecond: c.Uint("config.timeout_second"),
 
 		RootFolderPath: rootFolderPath,
