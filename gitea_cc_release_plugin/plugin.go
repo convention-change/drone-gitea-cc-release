@@ -53,8 +53,12 @@ func (p *Plugin) Exec() error {
 		return exit_cli.Format("release_gitea_file_exists_do type only support %v", supportFileExistsDoList)
 	}
 
-	drone_log.Debugf("use GiteaApiKey: %v\n", p.Config.GiteaApiKey)
+	drone_log.Debugf("use GiteaBaseUrl: %v\n", p.Config.GiteaBaseUrl)
+	drone_log.Debugf("use GiteaInsecure: %v\n", p.Config.GiteaInsecure)
+	//drone_log.Debugf("use GiteaApiKey: %v\n", p.Config.GiteaApiKey)
 	drone_log.Debugf("use GiteaReleaseFileGlobs: %v\n", p.Config.GiteaReleaseFileGlobs)
+	drone_log.Debugf("use FilesChecksum: %v\n", p.Config.FilesChecksum)
+	drone_log.Debugf("use NoteByConventionChange: %v\n", p.Config.NoteByConventionChange)
 
 	rc, err := newReleaseClient(p.Drone, p.Config)
 	if err != nil {
