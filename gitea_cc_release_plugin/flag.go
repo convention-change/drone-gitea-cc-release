@@ -12,7 +12,7 @@ import (
 )
 
 func IsBuildDebugOpen(c *cli.Context) bool {
-	return c.Bool("config.debug") || c.Bool(drone_info.NameCliStepsDebug)
+	return c.Bool(NamePluginDebug) || c.Bool(drone_info.NameCliStepsDebug)
 }
 
 // BindCliFlag
@@ -48,7 +48,7 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 
 	config := Config{
 		Debug:         debug,
-		TimeoutSecond: c.Uint("config.timeout_second"),
+		TimeoutSecond: c.Uint(NamePluginTimeOut),
 
 		RootFolderPath: rootFolderPath,
 
@@ -198,14 +198,14 @@ func HideFlag() []cli.Flag {
 func CommonFlag() []cli.Flag {
 	return []cli.Flag{
 		&cli.UintFlag{
-			Name:    "config.timeout_second,timeout_second",
+			Name:    NamePluginTimeOut,
 			Usage:   "do request timeout setting second.",
 			Hidden:  true,
 			Value:   10,
-			EnvVars: []string{"PLUGIN_TIMEOUT_SECOND"},
+			EnvVars: []string{EnvPluginTimeOut},
 		},
 		&cli.BoolFlag{
-			Name:    "config.debug,debug",
+			Name:    NamePluginDebug,
 			Usage:   "debug mode",
 			Value:   false,
 			EnvVars: []string{drone_info.EnvKeyPluginDebug},

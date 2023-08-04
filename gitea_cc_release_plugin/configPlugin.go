@@ -3,6 +3,10 @@ package gitea_cc_release_plugin
 const (
 	EnvPluginResultShareHost = "PLUGIN_RESULT_SHARE_HOST"
 
+	NamePluginDebug   = "config.debug"
+	EnvPluginTimeOut  = "PLUGIN_TIMEOUT_SECOND"
+	NamePluginTimeOut = "config.timeout_second"
+
 	//msgTypeText        = "text"
 	//msgTypePost        = "post"
 	//msgTypeInteractive = "interactive"
