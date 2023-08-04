@@ -26,41 +26,118 @@ Please read [Contributor Guide](.github/CONTRIBUTING_DOC/CONTRIBUTING.md) for mo
 
 ## Features
 
+- [X] release for [gitea](https://docs.gitea.com/)
+- [X] gitea client token use [Access Token](https://docs.gitea.com/development/api-usage#authentication)
+- [X] upload release files by glob pattern
+- [X] support upload check sum file
+- [X] support [conventional-commits](https://www.conventionalcommits.org/) log
 - [ ] more perfect test case coverage
-- [ ] more perfect benchmark case
 - more see [features/README.md](features/README.md)
 
 ## usage
 
 - [x] read [conventional-commits](https://www.conventionalcommits.org/) log
-- [x] release for [gitea](https://docs.gitea.com/)
+- [x] get your [gitea Access Token](https://docs.gitea.com/development/api-usage#authentication) for `release_gitea_api_key`
+- [x] add `.drone.yml` config as pipeline
 
 ### Pipeline Settings (.drone.yml)
 
 `1.x`
 
+- fast use as docker
+
 ```yaml
+kind: pipeline
+type: docker
+name: basic-docker
+
 steps:
-  - name: drone-gitea-cc-release
-    image: convention-change/drone-gitea-cc-release:latest
+  - name: gitea-cc-release
+    image: sinlov/drone-gitea-cc-release:1.0.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
     pull: if-not-exists
     settings:
-      debug: false
-      webhook:
-        # https://docs.drone.io/pipeline/environment/syntax/#from-secrets
-        from_secret: webhook_token
-      msg_type: your-message-type
-      timeout_second: 10 # default 10
+      prerelease: true # default true
+      release_gitea_base_url: https://gitea.xxxx.com
+      release_gitea_api_key:
+        from_secret: release_gitea_api_key
+      release_gitea_files: # release as files by glob pattern
+        - "doc/*.md"
+      release_gitea_files_checksum: # generate specific checksums, support [ md5 sha1 sha256 sha512 adler32 crc32 blake2b blake2s ]
+        - md5
+        - sha1
+        - sha256
+      release_gitea_file_exists_do: "overwrite" # default skip, support [ fail skip overwrite ]
+      release_gitea_note_by_convention_change: true # default false, like tools https://github.com/convention-change/convention-change-log read change log
     when:
       event: # https://docs.drone.io/pipeline/exec/syntax/conditions/#by-event
-        - promote
-        - rollback
-        - push
-        - pull_request
         - tag
-      status: # only support failure/success,  both open will send anything
-        - failure
-        # - success
+```
+
+- full config
+
+```yaml
+kind: pipeline
+type: docker
+name: basic-docker
+
+steps:
+  - name: gitea-cc-release
+    image: sinlov/drone-gitea-cc-release:1.0.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
+    pull: if-not-exists
+    settings:
+      # debug: true # plugin debug switch
+      prerelease: true # default true
+      draft: true # default false
+      release_gitea_base_url: https://gitea.xxxx.com
+      release_gitea_api_key:
+        from_secret: release_gitea_api_key
+      # release_gitea_insecure: false # default false, visit base-url via insecure https protocol
+      release_gitea_files: # release as files by glob pattern
+        - "doc/*.md"
+        - "**/*.zip"
+      release_gitea_files_checksum: # generate specific checksums, support [ md5 sha1 sha256 sha512 adler32 crc32 blake2b blake2s ]
+        - md5
+        - sha1
+        - sha256
+      release_gitea_file_exists_do: "overwrite" # default skip, support [ fail skip overwrite ]
+      release_gitea_note_by_convention_change: true # default false, like tools https://github.com/convention-change/convention-change-log read change log
+      # release_read_change_log_file: CHANGELOG.md # default CHANGELOG.md
+      # release_gitea_title: "" # if set release_gitea_note_by_convention_change true will cover this, use "" will use tag
+      # release_gitea_note: "" # if set release_gitea_note_by_convention_change true will cover this
+    when:
+      event: # https://docs.drone.io/pipeline/exec/syntax/conditions/#by-event
+        - tag
+```
+
+- `1.x` drone-exec only support env
+- download by [https://github.com/convention-change/drone-gitea-cc-release/releases](https://github.com/convention-change/drone-gitea-cc-release/releases) to get platform binary, then has local path
+- binary path like `C:\Drone\drone-runner-exec\plugins\drone-feishu-group-robot.exe` can be drone run env like `EXEC_DRONE_GITEA-CC-RELEASE`
+- env:EXEC_DRONE_GITEA-CC-RELEASE can set at file which define as [DRONE_RUNNER_ENVFILE](https://docs.drone.io/runner/exec/configuration/reference/drone-runner-envfile/) to support each platform to send feishu message
+
+```yaml
+steps:
+  - name: notification-feishu-group-robot-exec # must has env EXEC_DRONE_GITEA-CC-RELEASE and exec tools
+    environment:
+      # PLUGIN_DEBUG: false
+      PLUGIN_PRERELEASE: true # default true
+      PLUGIN_DRAFT: true # default false
+      PLUGIN_RELEASE_GITEA_BASE_URL: https://gitea.xxxx.com
+      PLUGIN_RELEASE_GITEA_API_KEY:
+         from_secret: release_gitea_api_key
+      # PLUGIN_RELEASE_GITEA_INSECURE: false # default false, visit base-url via insecure https protocol
+      PLUGIN_RELEASE_GITEA_FILES: "doc/*.md,**/*.zip" # release as files by glob pattern
+      PLUGIN_RELEASE_GITEA_FILES_CHECKSUM: "md5,sha1,sha256" # generate specific checksums, support [ md5 sha1 sha256 sha512 adler32 crc32 blake2b blake2s ]
+      PLUGIN_RELEASE_GITEA_FILE_EXISTS_DO: "overwrite" # default skip, support [ fail skip overwrite ]
+      PLUGIN_RELEASE_GITEA_NOTE_BY_CONVENTION_CHANGE: true # default false, like tools https://github.com/convention-change/convention-change-log read change log
+      # PLUGIN_RELEASE_READ_CHANGE_LOG_FILE: CHANGELOG.md # default CHANGELOG.md
+      PLUGIN_RELEASE_GITEA_TITLE: "" # if set release_gitea_note_by_convention_change true will cover this, use "" will use tag
+      PLUGIN_RELEASE_GITEA_NOTE: "" # if set release_gitea_note_by_convention_change true will cover this
+    commands:
+      - ${EXEC_DRONE_GITEA-CC-RELEASE} `
+        ""
+    when:
+      event: # https://docs.drone.io/pipeline/exec/syntax/conditions/#by-event
+        - tag
 ```
 
 ### install cli tools
@@ -86,8 +163,6 @@ or download by [github releases](https://github.com/convention-change/drone-gite
 | https://github.com/stretchr/testify        | v1.8.4  |
 | https://github.com/sebdah/goldie           | v2.5.3  |
 | https://github.com/joho/godotenv           | v1.4.0  |
-| https://github.com/sinlov/drone-info-tools | v1.21.0 |
-| https://github.com/urfave/cli/v2           | v2.25.7 |
 
 # dev
 

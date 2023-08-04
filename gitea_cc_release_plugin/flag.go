@@ -146,7 +146,7 @@ func Flag() []cli.Flag {
 
 		&cli.BoolFlag{
 			Name:    NameNoteByConventionChange,
-			Usage:   "release note by convention change",
+			Usage:   "release note by convention change like https://github.com/convention-change/convention-change-log",
 			Value:   false,
 			EnvVars: []string{EnvNoteByConventionChange},
 		},
@@ -214,7 +214,7 @@ func CommonFlag() []cli.Flag {
 		&cli.BoolFlag{
 			Name:    NameDraft,
 			Usage:   "draft release",
-			Value:   true,
+			Value:   false,
 			EnvVars: []string{EnvDraft},
 		},
 		&cli.BoolFlag{
