@@ -1,6 +1,6 @@
 {
   "name": "drone-gitea-cc-release",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "release for https://docs.gitea.com/ and support log https://www.conventionalcommits.org/",
   "directories": {
     "doc": "doc"
