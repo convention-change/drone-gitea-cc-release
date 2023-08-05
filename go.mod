@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	code.gitea.io/sdk/gitea v0.15.1
-	github.com/convention-change/convention-change-log v1.2.0
+	github.com/convention-change/convention-change-log v1.3.1
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.3
 	github.com/sinlov/drone-info-tools v1.30.0
