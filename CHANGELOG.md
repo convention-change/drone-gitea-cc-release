@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.0.1](https://github.com/convention-change/drone-gitea-cc-release/compare/1.0.0...v1.0.1) (2023-08-05)
+
+### 👷‍ Build System
+
+* update to github.com/convention-change/convention-change-log v1.3.1 ([43706504](https://github.com/convention-change/drone-gitea-cc-release/commit/4370650407fae36cbbe0def8a963206594c0a2b8))
+
 ## 1.0.0 (2023-08-04)
 
 ### ✨ Features
