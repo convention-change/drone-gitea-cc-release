@@ -106,7 +106,7 @@ func randomStr(cnt uint) string {
 	var letters = []byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
 	result := make([]byte, cnt)
 	keyL := len(letters)
-	rand.Seed(time.Now().Unix())
+	rand.NewSource(time.Now().Unix())
 	for i := range result {
 		result[i] = letters[rand.Intn(keyL)]
 	}
@@ -122,7 +122,7 @@ func randomStrBySed(cnt uint, sed string) string {
 	var letters = []byte(sed)
 	result := make([]byte, cnt)
 	keyL := len(letters)
-	rand.Seed(time.Now().Unix())
+	rand.NewSource(time.Now().Unix())
 	for i := range result {
 		result[i] = letters[rand.Intn(keyL)]
 	}
