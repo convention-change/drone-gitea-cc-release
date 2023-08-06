@@ -1,4 +1,4 @@
-package plugin_test
+package gitea_cc_release_plugin_test
 
 import (
 	"bytes"
@@ -29,9 +29,10 @@ const (
 )
 
 var (
-	envDebug       = false
-	envProjectRoot = ""
-	envDroneProto  = "https"
+	envDebug             = false
+	envRunTestFolderPath = ""
+	envProjectRoot       = ""
+	envDroneProto        = "https"
 
 	envEnvKeys []string
 	strData    []string
@@ -91,10 +92,12 @@ func envCheck(t *testing.T) bool {
 func init() {
 	template.RegisterSettings(template.DefaultFunctions)
 
-	projectRoot, err := getCurrentFolderPath()
+	currentFolderPath, err := getCurrentFolderPath()
 	if err == nil {
-		envProjectRoot = filepath.Dir(projectRoot)
+		envRunTestFolderPath = currentFolderPath
+		envProjectRoot = filepath.Dir(envRunTestFolderPath)
 	}
+
 	envDebug = fetchOsEnvBool(drone_info.EnvKeyPluginDebug, false) || fetchOsEnvBool(drone_info.EnvDroneBuildDebug, false)
 
 	envDroneProto = fetchOsEnvStr("DRONE_PROTO", "https")

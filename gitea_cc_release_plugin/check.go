@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -69,7 +70,13 @@ func Checksum(r io.Reader, method string) (string, error) {
 	return "", fmt.Errorf("hashing method %s is not supported", method)
 }
 
-func WriteChecksumsByFiles(files, methods []string) ([]string, error) {
+func WriteChecksumsByFiles(files, methods []string, root string) ([]string, error) {
+	if len(methods) == 0 {
+		return nil, fmt.Errorf("no hashing methods specified")
+	}
+	if len(files) == 0 {
+		return nil, fmt.Errorf("no files specified")
+	}
 	checksums := make(map[string][]string)
 
 	for _, method := range methods {
@@ -90,6 +97,12 @@ func WriteChecksumsByFiles(files, methods []string) ([]string, error) {
 		}
 	}
 
+	if root != "" {
+		if !strings.HasSuffix(root, string(filepath.Separator)) {
+			root = fmt.Sprintf("%s%s", root, string(filepath.Separator))
+		}
+	}
+
 	for method, results := range checksums {
 		filename := method + "sum.txt"
 		f, err := os.Create(filename)
@@ -101,9 +114,12 @@ func WriteChecksumsByFiles(files, methods []string) ([]string, error) {
 		for i := 0; i < len(results); i += 2 {
 			hash := results[i]
 			file := results[i+1]
+			if root != "" {
+				file = strings.Replace(file, root, "", -1)
+			}
 
-			if _, err := f.WriteString(fmt.Sprintf("%s  %s\n", hash, file)); err != nil {
-				return nil, err
+			if _, errWrite := f.WriteString(fmt.Sprintf("%s  %s\n", hash, file)); errWrite != nil {
+				return nil, errWrite
 			}
 		}
 
@@ -115,14 +131,14 @@ func WriteChecksumsByFiles(files, methods []string) ([]string, error) {
 
 var ErrGlobsEmpty = fmt.Errorf("globs is empty")
 
-func FindFileByGlobs(globs []string) ([]string, error) {
+func FindFileByGlobs(globs []string, root string) ([]string, error) {
 	if len(globs) == 0 {
 		return nil, ErrGlobsEmpty
 	}
 	var findFiles []string
 	if len(globs) > 0 {
 		for _, glob := range globs {
-			globed, errGlob := filepath.Glob(glob)
+			globed, errGlob := WalkAllByGlob(root, glob, true)
 			if errGlob != nil {
 				errGlobFind := fmt.Errorf("from glob find %s failed: %v", glob, errGlob)
 				return nil, errGlobFind
@@ -134,4 +150,40 @@ func FindFileByGlobs(globs []string) ([]string, error) {
 	}
 
 	return findFiles, nil
+}
+
+// WalkAllByGlob
+// can walk all path then return as list, by glob with filepath.Glob
+func WalkAllByGlob(path string, glob string, ignoreFolder bool) ([]string, error) {
+	fiRoot, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, fmt.Errorf("want Walk not exist at path: %s", path)
+		}
+		return nil, fmt.Errorf("want Walk not read at path: %s , err: %v", path, err)
+	}
+	if !fiRoot.IsDir() {
+		return nil, fmt.Errorf("want Walk path is file, at: %s", path)
+	}
+	pathOfGlob := fmt.Sprintf("%s%s%s", path, `/`, glob)
+	matches, err := filepath.Glob(pathOfGlob)
+	if err != nil {
+		return nil, fmt.Errorf("want Walk by path %s by glob %s ,err: %v", path, glob, err)
+	}
+	if len(matches) == 0 {
+		return nil, nil
+	}
+	files := make([]string, 0, 30)
+	for _, match := range matches {
+		f, errStat := os.Stat(match)
+		if errStat != nil {
+			return nil, fmt.Errorf("want Walk Stat at path %s by glob %s ,err: %v", match, glob, errStat)
+		}
+		if ignoreFolder && f.IsDir() {
+			continue
+		}
+		files = append(files, match)
+	}
+
+	return files, nil
 }

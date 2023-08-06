@@ -11,7 +11,7 @@
 
 ## for what
 
-- drone CI release for [gitea](https://docs.gitea.com/) and
+- drone CI release for [gitea](https://docs.gitea.com/) and `must with git tag push`
   support [conventional-commits](https://www.conventionalcommits.org/) log
 
 ## Contributing
@@ -27,7 +27,7 @@ Please read [Contributor Guide](.github/CONTRIBUTING_DOC/CONTRIBUTING.md) for mo
 
 ## Features
 
-- [X] release for [gitea](https://docs.gitea.com/)
+- [X] release for [gitea](https://docs.gitea.com/) and `only support with git tag` pushed
 - [X] gitea client token use [Access Token](https://docs.gitea.com/development/api-usage#authentication)
 - [X] upload release files by glob pattern
 - [X] support upload check sum file
@@ -70,6 +70,8 @@ steps:
         - sha256
       release_gitea_file_exists_do: "overwrite" # default skip, support [ fail skip overwrite ]
       release_gitea_note_by_convention_change: true # default false, like tools https://github.com/convention-change/convention-change-log read change log
+      # gitea_publish_package_go: true # gitea 1.20.1+ support publish go package, default false
+      # gitea_publish_package_path_go: "" # publish go package dir to find go.mod, if not set will use git root path
     when:
       event: # https://docs.drone.io/pipeline/exec/syntax/conditions/#by-event
         - tag
@@ -94,6 +96,7 @@ steps:
       release_gitea_api_key:
         from_secret: release_gitea_api_key
       # release_gitea_insecure: false # default false, visit base-url via insecure https protocol
+      release_gitea_file_root_path: "" # release as files by glob pattern root path, if not setting will get cwd folder by PLUGIN_RELEASE_GITEA_ROOT_FOLDER_PATH
       release_gitea_files: # release as files by glob pattern
         - "doc/*.md"
         - "**/*.zip"
@@ -106,6 +109,8 @@ steps:
       # release_read_change_log_file: CHANGELOG.md # default CHANGELOG.md
       # release_gitea_title: "" # if set release_gitea_note_by_convention_change true will cover this, use "" will use tag
       # release_gitea_note: "" # if set release_gitea_note_by_convention_change true will cover this
+      gitea_publish_package_go: true # gitea 1.20.1+ support publish go package, default false
+      gitea_publish_package_path_go: "" # publish go package dir to find go.mod, if not set will use git root path
     when:
       event: # https://docs.drone.io/pipeline/exec/syntax/conditions/#by-event
         - tag
@@ -132,6 +137,7 @@ steps:
       PLUGIN_RELEASE_GITEA_API_KEY:
         from_secret: release_gitea_api_key
       # PLUGIN_RELEASE_GITEA_INSECURE: false # default false, visit base-url via insecure https protocol
+      # PLUGIN_RELEASE_GITEA_FILE_ROOT_PATH: "" # release as files by glob pattern root path, if not setting will get cwd folder by PLUGIN_RELEASE_GITEA_ROOT_FOLDER_PATH
       PLUGIN_RELEASE_GITEA_FILES: "doc/*.md,**/*.zip" # release as files by glob pattern
       PLUGIN_RELEASE_GITEA_FILES_CHECKSUM: "md5,sha1,sha256" # generate specific checksums, support [ md5 sha1 sha256 sha512 adler32 crc32 blake2b blake2s ]
       PLUGIN_RELEASE_GITEA_FILE_EXISTS_DO: "overwrite" # default skip, support [ fail skip overwrite ]
@@ -139,6 +145,8 @@ steps:
       # PLUGIN_RELEASE_READ_CHANGE_LOG_FILE: CHANGELOG.md # default CHANGELOG.md
       PLUGIN_RELEASE_GITEA_TITLE: "" # if set release_gitea_note_by_convention_change true will cover this, use "" will use tag
       PLUGIN_RELEASE_GITEA_NOTE: "" # if set release_gitea_note_by_convention_change true will cover this
+      # PLUGIN_GITEA_PUBLISH_PACKAGE_GO: true # gitea 1.20.1+ support publish go package, default false
+      # PLUGIN_GITEA_PUBLISH_PACKAGE_PATH_GO: "" # publish go package dir to find go.mod, if not set will use git root path
     commands:
       - ${EXEC_DRONE_GITEA-CC-RELEASE} `
         ""
@@ -170,7 +178,7 @@ or download by [github releases](https://github.com/convention-change/drone-gite
 | https://github.com/stretchr/testify | v1.8.4  |
 | https://github.com/sebdah/goldie    | v2.5.3  |
 | https://github.com/joho/godotenv    | v1.4.0  |
-| https://github.com/go-gitea/gitea   | v0.15.1 |
+| https://gitea.com/gitea/go-sdk      | v0.15.1 |
 
 # dev
 

@@ -1,4 +1,4 @@
-package plugin_test
+package gitea_cc_release_plugin_test
 
 import (
 	"fmt"
@@ -62,8 +62,9 @@ func TestPlugin(t *testing.T) {
 		GiteaInsecure: envGiteaInsecure,
 		GiteaApiKey:   envGiteaApiKey,
 
-		GiteaReleaseFileGlobs: envReleaseFiles,
-		FilesChecksum:         envFilesChecksum,
+		GiteaReleaseFileGlobs:        envReleaseFiles,
+		GiteaReleaseFileGlobRootPath: envRunTestFolderPath,
+		FilesChecksum:                envFilesChecksum,
 
 		GiteaFileExistsDo: envGiteaFileExistsDo,
 		GiteaDraft:        envGiteaDraft,
@@ -93,7 +94,7 @@ func TestPlugin(t *testing.T) {
 		t.Fatal(errMock)
 	}
 	droneMock.Build.RepoBranch = "main"
-	droneMock.Build.Tag = "v1.0.0"
+	droneMock.Build.Tag = "v1.0.7"
 	p.Drone = *droneMock
 
 	globs, err := mockUploadFiles(t)
@@ -107,6 +108,10 @@ func TestPlugin(t *testing.T) {
 		gitea_cc_release_plugin.CheckSumSha256,
 		gitea_cc_release_plugin.CheckSumSha512,
 	}
+
+	p.Config.PublishPackageGo = true
+	p.Config.PublishPackagePathGo = envProjectRoot
+
 	// verify Plugin
 	err = p.Exec()
 	if err != nil {

@@ -32,6 +32,9 @@ const (
 	EnvReleaseFiles  = "PLUGIN_RELEASE_GITEA_FILES"
 	NameReleaseFiles = "config.release_gitea_files"
 
+	EnvReleaseFileRootPath  = "PLUGIN_RELEASE_GITEA_FILE_ROOT_PATH"
+	NameReleaseFileRootPath = "config.release_gitea_file_root_path"
+
 	EnvFilesChecksum  = "PLUGIN_RELEASE_GITEA_FILES_CHECKSUM"
 	NameFilesChecksum = "config.release_gitea_files_checksum"
 
@@ -41,6 +44,12 @@ const (
 	FileExistsDoOverwrite = "overwrite"
 	FileExistsDoFail      = "fail"
 	FileExistsDoSkip      = "skip"
+
+	EnvGiteaPublishPackageGo  = "PLUGIN_GITEA_PUBLISH_PACKAGE_GO"
+	NameGiteaPublishPackageGo = "config.gitea_publish_package_go"
+
+	EnvGiteaPublishPackagePathGo  = "PLUGIN_GITEA_PUBLISH_PACKAGE_PATH_GO"
+	NameGiteaPublishPackagePathGo = "config.gitea_publish_package_path_go"
 
 	EnvTitle  = "PLUGIN_RELEASE_GITEA_TITLE"
 	NameTitle = "config.release_gitea_title"
@@ -83,14 +92,18 @@ type (
 		GiteaInsecure bool
 		GiteaApiKey   string
 
-		GiteaReleaseFileGlobs []string
-		FilesChecksum         []string
+		GiteaReleaseFileGlobs        []string
+		GiteaReleaseFileGlobRootPath string
+		FilesChecksum                []string
+		GiteaFileExistsDo            string
 
-		GiteaFileExistsDo string
-		GiteaDraft        bool
-		GiteaPrerelease   bool
-		GiteaTitle        string
-		GiteaNote         string
+		PublishPackageGo     bool
+		PublishPackagePathGo string
+
+		GiteaDraft      bool
+		GiteaPrerelease bool
+		GiteaTitle      string
+		GiteaNote       string
 
 		NoteByConventionChange bool
 		ReadChangeLogFile      string

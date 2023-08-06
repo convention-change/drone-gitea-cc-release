@@ -1,4 +1,4 @@
-package plugin_test
+package gitea_cc_release_plugin_test
 
 import (
 	"github.com/sinlov/drone-info-tools/drone_info"
