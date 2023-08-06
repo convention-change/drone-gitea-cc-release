@@ -1,12 +1,14 @@
 [![ci](https://github.com/convention-change/drone-gitea-cc-release/workflows/ci/badge.svg?branch=main)](https://github.com/convention-change/drone-gitea-cc-release/actions/workflows/ci.yml)
-[![GitHub license](https://img.shields.io/github/license/convention-change/drone-gitea-cc-release)](https://github.com/convention-change/drone-gitea-cc-release)
+
 [![go mod version](https://img.shields.io/github/go-mod/go-version/convention-change/drone-gitea-cc-release?label=go.mod)](https://github.com/convention-change/drone-gitea-cc-release)
 [![GoDoc](https://godoc.org/github.com/convention-change/drone-gitea-cc-release?status.png)](https://godoc.org/github.com/convention-change/drone-gitea-cc-release/)
 [![GoReportCard](https://goreportcard.com/badge/github.com/convention-change/drone-gitea-cc-release)](https://goreportcard.com/report/github.com/convention-change/drone-gitea-cc-release)
-[![codecov](https://codecov.io/gh/convention-change/drone-gitea-cc-release/branch/main/graph/badge.svg)](https://codecov.io/gh/convention-change/drone-gitea-cc-release)
+
 [![docker hub version semver](https://img.shields.io/docker/v/sinlov/drone-gitea-cc-release?sort=semver)](https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags?page=1&ordering=last_updated)
 [![docker hub image size](https://img.shields.io/docker/image-size/sinlov/drone-gitea-cc-release)](https://hub.docker.com/r/sinlov/drone-gitea-cc-release)
 [![docker hub image pulls](https://img.shields.io/docker/pulls/sinlov/drone-gitea-cc-release)](https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags?page=1&ordering=last_updated)
+
+[![GitHub license](https://img.shields.io/github/license/convention-change/drone-gitea-cc-release)](https://github.com/convention-change/drone-gitea-cc-release)
 [![GitHub release](https://img.shields.io/github/v/release/convention-change/drone-gitea-cc-release?style=social)](https://github.com/convention-change/drone-gitea-cc-release/releases)
 
 ## for what
