@@ -3,7 +3,7 @@
 # Author: convention-change
 # dockerfile offical document https://docs.docker.com/engine/reference/builder/
 # https://hub.docker.com/_/golang
-FROM golang:1.18.10-buster as builder
+FROM golang:1.20.7-bookworm as builder
 
 ARG GO_ENV_PACKAGE_NAME=github.com/convention-change/drone-gitea-cc-release
 ARG GO_ENV_ROOT_BUILD_BIN_NAME=drone-gitea-cc-release

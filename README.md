@@ -11,7 +11,8 @@
 
 ## for what
 
-- drone CI release for [gitea](https://docs.gitea.com/) and support [conventional-commits](https://www.conventionalcommits.org/) log
+- drone CI release for [gitea](https://docs.gitea.com/) and
+  support [conventional-commits](https://www.conventionalcommits.org/) log
 
 ## Contributing
 
@@ -37,7 +38,8 @@ Please read [Contributor Guide](.github/CONTRIBUTING_DOC/CONTRIBUTING.md) for mo
 ## usage
 
 - [x] read [conventional-commits](https://www.conventionalcommits.org/) log
-- [x] get your [gitea Access Token](https://docs.gitea.com/development/api-usage#authentication) for `release_gitea_api_key`
+- [x] get your [gitea Access Token](https://docs.gitea.com/development/api-usage#authentication)
+  for `release_gitea_api_key`
 - [x] add `.drone.yml` config as pipeline
 
 ### Pipeline Settings (.drone.yml)
@@ -110,9 +112,14 @@ steps:
 ```
 
 - `1.x` drone-exec only support env
-- download by [https://github.com/convention-change/drone-gitea-cc-release/releases](https://github.com/convention-change/drone-gitea-cc-release/releases) to get platform binary, then has local path
-- binary path like `C:\Drone\drone-runner-exec\plugins\drone-feishu-group-robot.exe` can be drone run env like `EXEC_DRONE_GITEA-CC-RELEASE`
-- env:EXEC_DRONE_GITEA-CC-RELEASE can set at file which define as [DRONE_RUNNER_ENVFILE](https://docs.drone.io/runner/exec/configuration/reference/drone-runner-envfile/) to support each platform to send feishu message
+- download
+  by [https://github.com/convention-change/drone-gitea-cc-release/releases](https://github.com/convention-change/drone-gitea-cc-release/releases)
+  to get platform binary, then has local path
+- binary path like `C:\Drone\drone-runner-exec\plugins\drone-feishu-group-robot.exe` can be drone run env
+  like `EXEC_DRONE_GITEA-CC-RELEASE`
+- env:EXEC_DRONE_GITEA-CC-RELEASE can set at file which define
+  as [DRONE_RUNNER_ENVFILE](https://docs.drone.io/runner/exec/configuration/reference/drone-runner-envfile/) to support
+  each platform to send feishu message
 
 ```yaml
 steps:
@@ -123,7 +130,7 @@ steps:
       PLUGIN_DRAFT: true # default false
       PLUGIN_RELEASE_GITEA_BASE_URL: https://gitea.xxxx.com
       PLUGIN_RELEASE_GITEA_API_KEY:
-         from_secret: release_gitea_api_key
+        from_secret: release_gitea_api_key
       # PLUGIN_RELEASE_GITEA_INSECURE: false # default false, visit base-url via insecure https protocol
       PLUGIN_RELEASE_GITEA_FILES: "doc/*.md,**/*.zip" # release as files by glob pattern
       PLUGIN_RELEASE_GITEA_FILES_CHECKSUM: "md5,sha1,sha256" # generate specific checksums, support [ md5 sha1 sha256 sha512 adler32 crc32 blake2b blake2s ]
@@ -153,16 +160,17 @@ or download by [github releases](https://github.com/convention-change/drone-gite
 
 ## env
 
-- minimum go version: go 1.18
-- change `go 1.18`, `^1.18`, `1.18.10` to new go version
+- minimum go version: go 1.20
+- change `go 1.20`, `^1.20`, `1.20.7` to new go version
 
 ### libs
 
-| lib                                        | version |
-|:-------------------------------------------|:--------|
-| https://github.com/stretchr/testify        | v1.8.4  |
-| https://github.com/sebdah/goldie           | v2.5.3  |
-| https://github.com/joho/godotenv           | v1.4.0  |
+| lib                                 | version |
+|:------------------------------------|:--------|
+| https://github.com/stretchr/testify | v1.8.4  |
+| https://github.com/sebdah/goldie    | v2.5.3  |
+| https://github.com/joho/godotenv    | v1.4.0  |
+| https://github.com/go-gitea/gitea   | v0.15.1 |
 
 # dev
 
