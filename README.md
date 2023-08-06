@@ -170,7 +170,7 @@ or download by [github releases](https://github.com/convention-change/drone-gite
 | https://github.com/stretchr/testify | v1.8.4  |
 | https://github.com/sebdah/goldie    | v2.5.3  |
 | https://github.com/joho/godotenv    | v1.4.0  |
-| https://github.com/go-gitea/gitea   | v0.15.1 |
+| https://gitea.com/gitea/go-sdk      | v0.15.1 |
 
 # dev
 

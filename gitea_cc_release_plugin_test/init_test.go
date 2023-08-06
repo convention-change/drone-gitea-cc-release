@@ -1,4 +1,4 @@
-package plugin_test
+package gitea_cc_release_plugin_test
 
 import (
 	"bytes"
