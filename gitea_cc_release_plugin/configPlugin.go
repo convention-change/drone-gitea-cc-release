@@ -83,8 +83,9 @@ type (
 		GiteaInsecure bool
 		GiteaApiKey   string
 
-		GiteaReleaseFileGlobs []string
-		FilesChecksum         []string
+		GiteaReleaseFileGlobs        []string
+		GiteaReleaseFileGlobRootPath string
+		FilesChecksum                []string
 
 		GiteaFileExistsDo string
 		GiteaDraft        bool

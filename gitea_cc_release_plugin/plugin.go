@@ -60,7 +60,7 @@ func (p *Plugin) Exec() error {
 	drone_log.Debugf("use FilesChecksum: %v\n", p.Config.FilesChecksum)
 	drone_log.Debugf("use NoteByConventionChange: %v\n", p.Config.NoteByConventionChange)
 
-	rc, err := newReleaseClient(p.Drone, p.Config)
+	rc, err := NewReleaseClientByDrone(p.Drone, p.Config)
 	if err != nil {
 		drone_log.Error(err)
 		return exit_cli.Err(err)
@@ -83,13 +83,13 @@ func (p *Plugin) Exec() error {
 		}
 	}
 
-	release, err := rc.buildRelease()
+	release, err := rc.BuildRelease()
 	if err != nil {
 		drone_log.Error(err)
 		return exit_cli.Err(err)
 	}
 
-	if errUpload := rc.uploadFiles(release.ID); errUpload != nil {
+	if errUpload := rc.UploadFiles(release.ID); errUpload != nil {
 		drone_log.Error(errUpload)
 		return exit_cli.Err(errUpload)
 	}
