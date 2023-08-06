@@ -20,7 +20,7 @@ import (
 )
 
 var (
-	ErrMissingTag = fmt.Errorf("NewReleaseClientByDrone missing tag")
+	ErrMissingTag = fmt.Errorf("NewReleaseClientByDrone missing tag, please check drone now in tag build")
 )
 
 // Release holds ties the drone env data and gitea client together.
@@ -133,7 +133,7 @@ files:
 					return fmt.Errorf("failed to delete %s artifact: %s", file, err)
 				}
 
-				drone_log.Infof("successfully deleted old %s artifact\n", attachment.Name)
+				drone_log.Infof("successfully deleted old attachment.ID[ %v ] artifact %s\n", attachment.ID, attachment.Name)
 			}
 		}
 
@@ -141,7 +141,7 @@ files:
 			return fmt.Errorf("failed to upload %s artifact: %s", file, err)
 		}
 
-		drone_log.Infof("successfully uploaded %s artifact\n", file)
+		drone_log.Infof("successfully uploaded artifact: %s \n", file)
 	}
 
 	return nil
@@ -227,14 +227,14 @@ func NewReleaseClientByDrone(drone drone_info.Drone, config Config) (PluginRelea
 
 	var uploadFiles []string
 	if len(config.GiteaReleaseFileGlobs) > 0 {
-		findFiles, errGlobs := FindFileByGlobs(config.GiteaReleaseFileGlobs)
+		findFiles, errGlobs := FindFileByGlobs(config.GiteaReleaseFileGlobs, config.GiteaReleaseFileGlobRootPath)
 		if errGlobs != nil {
 			return nil, errGlobs
 		}
 		uploadFiles = findFiles
 
 		if len(config.FilesChecksum) > 0 {
-			filesCheckRes, errCheckSum := WriteChecksumsByFiles(uploadFiles, config.FilesChecksum)
+			filesCheckRes, errCheckSum := WriteChecksumsByFiles(uploadFiles, config.FilesChecksum, config.GiteaReleaseFileGlobRootPath)
 
 			if errCheckSum != nil {
 				errCheckSumWrite := fmt.Errorf("from config.files_checksum failed: %v", errCheckSum)

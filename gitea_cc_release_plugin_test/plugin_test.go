@@ -62,8 +62,9 @@ func TestPlugin(t *testing.T) {
 		GiteaInsecure: envGiteaInsecure,
 		GiteaApiKey:   envGiteaApiKey,
 
-		GiteaReleaseFileGlobs: envReleaseFiles,
-		FilesChecksum:         envFilesChecksum,
+		GiteaReleaseFileGlobs:        envReleaseFiles,
+		GiteaReleaseFileGlobRootPath: envRunTestFolderPath,
+		FilesChecksum:                envFilesChecksum,
 
 		GiteaFileExistsDo: envGiteaFileExistsDo,
 		GiteaDraft:        envGiteaDraft,

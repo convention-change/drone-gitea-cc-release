@@ -32,6 +32,9 @@ const (
 	EnvReleaseFiles  = "PLUGIN_RELEASE_GITEA_FILES"
 	NameReleaseFiles = "config.release_gitea_files"
 
+	EnvReleaseFileRootPath  = "PLUGIN_RELEASE_GITEA_FILE_ROOT_PATH"
+	NameReleaseFileRootPath = "config.release_gitea_file_root_path"
+
 	EnvFilesChecksum  = "PLUGIN_RELEASE_GITEA_FILES_CHECKSUM"
 	NameFilesChecksum = "config.release_gitea_files_checksum"
 

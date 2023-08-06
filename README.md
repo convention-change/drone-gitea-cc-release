@@ -11,7 +11,7 @@
 
 ## for what
 
-- drone CI release for [gitea](https://docs.gitea.com/) and
+- drone CI release for [gitea](https://docs.gitea.com/) and `must with git tag push`
   support [conventional-commits](https://www.conventionalcommits.org/) log
 
 ## Contributing
@@ -27,7 +27,7 @@ Please read [Contributor Guide](.github/CONTRIBUTING_DOC/CONTRIBUTING.md) for mo
 
 ## Features
 
-- [X] release for [gitea](https://docs.gitea.com/)
+- [X] release for [gitea](https://docs.gitea.com/) and `only support with git tag` pushed
 - [X] gitea client token use [Access Token](https://docs.gitea.com/development/api-usage#authentication)
 - [X] upload release files by glob pattern
 - [X] support upload check sum file
@@ -94,6 +94,7 @@ steps:
       release_gitea_api_key:
         from_secret: release_gitea_api_key
       # release_gitea_insecure: false # default false, visit base-url via insecure https protocol
+      release_gitea_file_root_path: "" # release as files by glob pattern root path, if not setting will get cwd folder by PLUGIN_RELEASE_GITEA_ROOT_FOLDER_PATH
       release_gitea_files: # release as files by glob pattern
         - "doc/*.md"
         - "**/*.zip"
@@ -132,6 +133,7 @@ steps:
       PLUGIN_RELEASE_GITEA_API_KEY:
         from_secret: release_gitea_api_key
       # PLUGIN_RELEASE_GITEA_INSECURE: false # default false, visit base-url via insecure https protocol
+      # PLUGIN_RELEASE_GITEA_FILE_ROOT_PATH: "" # release as files by glob pattern root path, if not setting will get cwd folder by PLUGIN_RELEASE_GITEA_ROOT_FOLDER_PATH
       PLUGIN_RELEASE_GITEA_FILES: "doc/*.md,**/*.zip" # release as files by glob pattern
       PLUGIN_RELEASE_GITEA_FILES_CHECKSUM: "md5,sha1,sha256" # generate specific checksums, support [ md5 sha1 sha256 sha512 adler32 crc32 blake2b blake2s ]
       PLUGIN_RELEASE_GITEA_FILE_EXISTS_DO: "overwrite" # default skip, support [ fail skip overwrite ]

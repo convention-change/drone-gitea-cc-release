@@ -45,6 +45,10 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 		}
 		note = noteContent
 	}
+	releaseFileRootPath := c.String(NameReleaseFileRootPath)
+	if releaseFileRootPath == "" {
+		releaseFileRootPath = rootFolderPath
+	}
 
 	config := Config{
 		Debug:         debug,
@@ -56,13 +60,14 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 		GiteaInsecure: c.Bool(NameGiteaInsecure),
 		GiteaApiKey:   c.String(NameGiteaApiKey),
 
-		GiteaReleaseFileGlobs: c.StringSlice(NameReleaseFiles),
-		FilesChecksum:         c.StringSlice(NameFilesChecksum),
-		GiteaFileExistsDo:     c.String(NameFileExistsDo),
-		GiteaDraft:            c.Bool(NameDraft),
-		GiteaPrerelease:       c.Bool(NamePrerelease),
-		GiteaTitle:            c.String(NameTitle),
-		GiteaNote:             note,
+		GiteaReleaseFileGlobs:        c.StringSlice(NameReleaseFiles),
+		GiteaReleaseFileGlobRootPath: releaseFileRootPath,
+		FilesChecksum:                c.StringSlice(NameFilesChecksum),
+		GiteaFileExistsDo:            c.String(NameFileExistsDo),
+		GiteaDraft:                   c.Bool(NameDraft),
+		GiteaPrerelease:              c.Bool(NamePrerelease),
+		GiteaTitle:                   c.String(NameTitle),
+		GiteaNote:                    note,
 
 		NoteByConventionChange: c.Bool(NameNoteByConventionChange),
 		ReadChangeLogFile:      changeLogFullPath,
@@ -120,6 +125,11 @@ func Flag() []cli.Flag {
 			Name:    NameReleaseFiles,
 			Usage:   "release as files by glob pattern",
 			EnvVars: []string{EnvReleaseFiles},
+		},
+		&cli.StringFlag{
+			Name:    NameReleaseFileRootPath,
+			Usage:   "release as files by glob pattern root path, if not setting will use root folder path",
+			EnvVars: []string{EnvReleaseFileRootPath},
 		},
 		&cli.StringSliceFlag{
 			Name:    NameFilesChecksum,
