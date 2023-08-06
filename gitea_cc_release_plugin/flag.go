@@ -49,6 +49,10 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 	if releaseFileRootPath == "" {
 		releaseFileRootPath = rootFolderPath
 	}
+	publishPackagePathGo := c.String(NameGiteaPublishPackagePathGo)
+	if publishPackagePathGo == "" {
+		publishPackagePathGo = rootFolderPath
+	}
 
 	config := Config{
 		Debug:         debug,
@@ -64,10 +68,14 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 		GiteaReleaseFileGlobRootPath: releaseFileRootPath,
 		FilesChecksum:                c.StringSlice(NameFilesChecksum),
 		GiteaFileExistsDo:            c.String(NameFileExistsDo),
-		GiteaDraft:                   c.Bool(NameDraft),
-		GiteaPrerelease:              c.Bool(NamePrerelease),
-		GiteaTitle:                   c.String(NameTitle),
-		GiteaNote:                    note,
+
+		PublishPackageGo:     c.Bool(NameGiteaPublishPackageGo),
+		PublishPackagePathGo: publishPackagePathGo,
+
+		GiteaDraft:      c.Bool(NameDraft),
+		GiteaPrerelease: c.Bool(NamePrerelease),
+		GiteaTitle:      c.String(NameTitle),
+		GiteaNote:       note,
 
 		NoteByConventionChange: c.Bool(NameNoteByConventionChange),
 		ReadChangeLogFile:      changeLogFullPath,
@@ -142,6 +150,19 @@ func Flag() []cli.Flag {
 			Value:   FileExistsDoFail,
 			EnvVars: []string{EnvFileExistsDo},
 		},
+
+		&cli.BoolFlag{
+			Name:    NameGiteaPublishPackageGo,
+			Usage:   "open publish go package, will use env:PLUGIN_GITEA_PUBLISH_PACKAGE_PATH_GO, gitea 1.20.1+ support, more see doc: https://docs.gitea.com/usage/packages/go",
+			Value:   false,
+			EnvVars: []string{EnvGiteaPublishPackageGo},
+		},
+		&cli.StringFlag{
+			Name:    NameGiteaPublishPackagePathGo,
+			Usage:   "publish go package is dir to find go.mod, if not set will use git root path, gitea 1.20.1+ support",
+			EnvVars: []string{EnvGiteaPublishPackagePathGo},
+		},
+
 		&cli.StringFlag{
 			Name:    NameTitle,
 			Usage:   "release title if not set will use tag name",

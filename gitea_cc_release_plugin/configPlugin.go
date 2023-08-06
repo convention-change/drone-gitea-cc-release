@@ -45,6 +45,12 @@ const (
 	FileExistsDoFail      = "fail"
 	FileExistsDoSkip      = "skip"
 
+	EnvGiteaPublishPackageGo  = "PLUGIN_GITEA_PUBLISH_PACKAGE_GO"
+	NameGiteaPublishPackageGo = "config.gitea_publish_package_go"
+
+	EnvGiteaPublishPackagePathGo  = "PLUGIN_GITEA_PUBLISH_PACKAGE_PATH_GO"
+	NameGiteaPublishPackagePathGo = "config.gitea_publish_package_path_go"
+
 	EnvTitle  = "PLUGIN_RELEASE_GITEA_TITLE"
 	NameTitle = "config.release_gitea_title"
 
@@ -89,12 +95,15 @@ type (
 		GiteaReleaseFileGlobs        []string
 		GiteaReleaseFileGlobRootPath string
 		FilesChecksum                []string
+		GiteaFileExistsDo            string
 
-		GiteaFileExistsDo string
-		GiteaDraft        bool
-		GiteaPrerelease   bool
-		GiteaTitle        string
-		GiteaNote         string
+		PublishPackageGo     bool
+		PublishPackagePathGo string
+
+		GiteaDraft      bool
+		GiteaPrerelease bool
+		GiteaTitle      string
+		GiteaNote       string
 
 		NoteByConventionChange bool
 		ReadChangeLogFile      string

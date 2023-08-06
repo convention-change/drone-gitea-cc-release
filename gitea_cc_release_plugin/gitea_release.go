@@ -1,6 +1,7 @@
 package gitea_cc_release_plugin
 
 import (
+	"bytes"
 	"code.gitea.io/sdk/gitea"
 	"context"
 	"crypto/tls"
@@ -10,9 +11,12 @@ import (
 	"github.com/sinlov/drone-info-tools/drone_info"
 	"github.com/sinlov/drone-info-tools/drone_log"
 	"github.com/sinlov/drone-info-tools/drone_urfave_cli_v2/exit_cli"
+	"golang.org/x/mod/module"
 	"io"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -20,7 +24,9 @@ import (
 )
 
 var (
-	ErrMissingTag = fmt.Errorf("NewReleaseClientByDrone missing tag, please check drone now in tag build")
+	ErrMissingTag              = fmt.Errorf("NewReleaseClientByDrone missing tag, please check drone now in tag build")
+	ErrPathCanNotLoadGoModFile = fmt.Errorf("path can not load go.mod")
+	ErrPackageGoExists         = fmt.Errorf("package go exists")
 )
 
 // Release holds ties the drone env data and gitea client together.
@@ -54,14 +60,118 @@ type releaseClient struct {
 	uploadFilePaths []string
 }
 
-func (r *releaseClient) PackageGoUpload(version string) error {
-	//TODO implement me
-	panic("implement me")
+type PackageGoInfo struct {
+	ModVersion module.Version
 }
 
-func (r *releaseClient) PackageGoFetch(version string) error {
+// PackageGoUpload
+// upload go package to gitea after gitea version 1.20.1
+func (r *releaseClient) PackageGoUpload(rootPath string) (error, *PackageGoInfo) {
 
-	return nil
+	errGoPkgFetch, exitsPackageInfo := r.PackageGoFetch(rootPath)
+	if errGoPkgFetch != nil {
+		if errGoPkgFetch == ErrPathCanNotLoadGoModFile {
+			return fmt.Errorf("PackageGoUpload PackageGoFetch error: %s", errGoPkgFetch), nil
+		}
+	}
+	if errGoPkgFetch == nil {
+		return ErrPackageGoExists, exitsPackageInfo
+	}
+
+	outZipPath, modFile, errZipGoModPkg := CreateGoModZipFromDir(rootPath, r.tag)
+	if errZipGoModPkg != nil {
+		return errZipGoModPkg, nil
+	}
+	res := &PackageGoInfo{
+		ModVersion: module.Version{
+			Path:    modFile.Module.Mod.Path,
+			Version: r.tag,
+		},
+	}
+
+	fileBodyIO, errOpen := os.Open(outZipPath)
+	if errOpen != nil {
+		return fmt.Errorf("open zip file %s , error: %s", outZipPath, errOpen), res
+	}
+	defer func(fileBodyIO *os.File) {
+		errFileBodyIO := fileBodyIO.Close()
+		if errOpen != nil {
+			log.Fatalf("try ResourcesPostFile file IO Close err: %v", errFileBodyIO)
+		}
+	}(fileBodyIO)
+
+	uploadPath := fmt.Sprintf("/api/packages/%s/go/upload", r.owner)
+	statusCode, errPutGoPackage := r.getApiStatusCode("PUT", uploadPath, nil, fileBodyIO)
+	if errPutGoPackage != nil {
+		return fmt.Errorf("put go package [ %s ] err: %v", uploadPath, errPutGoPackage), res
+	}
+	if statusCode != http.StatusCreated {
+		return fmt.Errorf("put go package [ %s ] errcode: %v", uploadPath, statusCode), res
+	}
+
+	return nil, res
+}
+
+func (r *releaseClient) PackageGoFetch(rootPath string) (error, *PackageGoInfo) {
+	modFile, err := FetchGoModFile(rootPath)
+	if err != nil {
+		return ErrPathCanNotLoadGoModFile, nil
+	}
+	mod := modFile.Module.Mod
+	goPackageName := mod.Path
+	goPackageVersion := r.tag
+	res := &PackageGoInfo{
+		ModVersion: module.Version{
+			Path:    goPackageName,
+			Version: goPackageVersion,
+		},
+	}
+	packageInfo, err := r.PackageFetch("go", goPackageName, goPackageVersion)
+	if err != nil {
+		return err, res
+	}
+
+	if packageInfo.Type != "go" || packageInfo.Name != res.ModVersion.Path || packageInfo.Version != res.ModVersion.Version {
+		infoJson, errToJsonStr := dataJsonStr(packageInfo, true)
+		if errToJsonStr != nil {
+			return errToJsonStr, res
+		}
+		return fmt.Errorf("server package info not match local package info, data:\n%s", infoJson), res
+	}
+
+	return nil, res
+}
+
+type GiteaPackageInfo struct {
+	Id      uint64 `json:"id"`
+	Type    string `json:"type"`
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
+func (r *releaseClient) PackageFetch(pkgType, name, version string) (*GiteaPackageInfo, error) {
+	pkgName := name
+	err := escapeValidatePathSegments(&pkgName)
+	if err != nil {
+		return nil, fmt.Errorf("PackageFetch escapeValidatePathSegments error: %s", err)
+	}
+	pkgVersion := version
+	err = escapeValidatePathSegments(&pkgVersion)
+	if err != nil {
+		return nil, fmt.Errorf("PackageFetch escapeValidatePathSegments error: %s", err)
+	}
+
+	apiPath := fmt.Sprintf("/api/v1/packages/%s/%s/%s/%s", r.owner, pkgType, pkgName, pkgVersion)
+
+	var giteaPackage GiteaPackageInfo
+	resp, err := r.getApiParsedResponse("GET", apiPath, nil, nil, &giteaPackage)
+	if err != nil {
+		return nil, fmt.Errorf("check go package [ %s ] err: %v", apiPath, err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("check go package [ %s ] errcode: %v", apiPath, resp.StatusCode)
+	}
+	return &giteaPackage, nil
 }
 
 func (r *releaseClient) BuildRelease() (*gitea.Release, error) {
@@ -307,9 +417,11 @@ type PluginReleaseClient interface {
 
 	UploadFiles(releaseID int64) error
 
-	PackageGoFetch(version string) error
+	PackageFetch(pkgType, name, version string) (*GiteaPackageInfo, error)
 
-	PackageGoUpload(version string) error
+	PackageGoFetch(rootPath string) (error, *PackageGoInfo)
+
+	PackageGoUpload(rootPath string) (error, *PackageGoInfo)
 }
 
 // giteaResponse represents the gitea response
@@ -359,7 +471,7 @@ func (r *releaseClient) doApiRequest(method, path string, header http.Header, bo
 	}
 	r.mutex.Lock()
 	debug := r.debug
-	urlFullPath := r.url + "/api" + path
+	urlFullPath := r.url + path
 	if debug {
 		fmt.Printf("%s: %s\nHeader: %v\nBody: %s\n", method, urlFullPath, header, body)
 	}
@@ -419,13 +531,13 @@ func statusCodeToErr(resp *giteaResponse) (body []byte, err error) {
 	}
 
 	switch resp.StatusCode {
-	case 403:
+	case http.StatusForbidden:
 		return data, errors.New("403 Forbidden")
-	case 404:
+	case http.StatusNotFound:
 		return data, errors.New("404 Not Found")
-	case 409:
+	case http.StatusConflict:
 		return data, errors.New("409 Conflict")
-	case 422:
+	case http.StatusUnprocessableEntity:
 		return data, fmt.Errorf("422 Unprocessable Entity: %s", string(data))
 	}
 
@@ -439,4 +551,46 @@ func statusCodeToErr(resp *giteaResponse) (body []byte, err error) {
 		return data, fmt.Errorf("Unknown API Error: %d\nRequest: '%s' with '%s' method '%s' header and '%s' body", resp.StatusCode, urlPath, method, header, string(data))
 	}
 	return data, errors.New(errMap["message"].(string))
+}
+
+// escapeValidatePathSegments is a help function to validate and encode url path segments
+//
+//nolint:golint,unused
+func escapeValidateQuerySegments(seg ...*string) error {
+	for i := range seg {
+		if seg[i] == nil || len(*seg[i]) == 0 {
+			return fmt.Errorf("path segment [%d] is empty", i)
+		}
+		*seg[i] = url.QueryEscape(*seg[i])
+	}
+	return nil
+}
+
+// escapeValidatePathSegments is a help function to validate and encode url path segments
+//
+//nolint:golint,unused
+func escapeValidatePathSegments(seg ...*string) error {
+	for i := range seg {
+		if seg[i] == nil || len(*seg[i]) == 0 {
+			return fmt.Errorf("path segment [%d] is empty", i)
+		}
+		*seg[i] = url.PathEscape(*seg[i])
+	}
+	return nil
+}
+
+func dataJsonStr(v any, beauty bool) (string, error) {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return "", err
+	}
+	if beauty {
+		var str bytes.Buffer
+		errIndent := json.Indent(&str, data, "", "  ")
+		if errIndent != nil {
+			return "", errIndent
+		}
+		return str.String(), nil
+	}
+	return string(data), nil
 }

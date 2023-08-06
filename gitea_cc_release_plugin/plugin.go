@@ -94,6 +94,19 @@ func (p *Plugin) Exec() error {
 		return exit_cli.Err(errUpload)
 	}
 
+	if p.Config.PublishPackageGo {
+		errPackageGoUpload, goPkgInfo := rc.PackageGoUpload(p.Config.PublishPackagePathGo)
+		if errPackageGoUpload != nil {
+			if errPackageGoUpload != ErrPackageGoExists {
+				drone_log.Error(errPackageGoUpload)
+				return exit_cli.Err(errPackageGoUpload)
+			}
+			drone_log.Warnf("package exists go package owner: %s [ %s/%s ], skip upload\n", p.Drone.Repo.OwnerName, goPkgInfo.ModVersion.Path, goPkgInfo.ModVersion.Version)
+		} else {
+			drone_log.Infof("successfully uploaded go package owner: %s [ %s/%s ]\n", p.Drone.Repo.OwnerName, goPkgInfo.ModVersion.Path, goPkgInfo.ModVersion.Version)
+		}
+	}
+
 	return nil
 }
 

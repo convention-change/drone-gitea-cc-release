@@ -30,11 +30,12 @@ func TestCreateGoModZipFromDir(t *testing.T) {
 
 	t.Logf("~> do CreateGoModZipFromDir")
 	// do CreateGoModZipFromDir
-	outPath, err := gitea_cc_release_plugin.CreateGoModZipFromDir(envProjectRoot, pkgVersion)
+	outPath, modFile, err := gitea_cc_release_plugin.CreateGoModZipFromDir(envProjectRoot, pkgVersion)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("outPath: %s", outPath)
+	t.Logf("modFile.Module.Mod.Path: %v", modFile.Module.Mod.Path)
 
 	// verify CreateGoModZipFromDir
 	//assert.Equal(t, "expected", "")
