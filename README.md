@@ -32,8 +32,10 @@ Please read [Contributor Guide](.github/CONTRIBUTING_DOC/CONTRIBUTING.md) for mo
 - [X] upload release files by glob pattern
 - [X] support upload check sum file
 - [X] support [conventional-commits](https://www.conventionalcommits.org/) log
+- [X] publish package support
+    - [X] go package publish, must update gitea:1.20.1+ and set `gitea_publish_package_go` to `true` doc see [https://docs.gitea.com/zh-cn/usage/packages/go](https://docs.gitea.com/zh-cn/usage/packages/go)
 - [ ] more perfect test case coverage
-- more see [features/README.md](features/README.md)
+- more see [CHANGELOG.md](https://github.com/convention-change/drone-gitea-cc-release/blob/main/CHANGELOG.md)
 
 ## usage
 
@@ -55,7 +57,7 @@ name: basic-docker
 
 steps:
   - name: gitea-cc-release
-    image: sinlov/drone-gitea-cc-release:1.0.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
+    image: sinlov/drone-gitea-cc-release:1.1.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
     pull: if-not-exists
     settings:
       prerelease: true # default true
@@ -86,7 +88,7 @@ name: basic-docker
 
 steps:
   - name: gitea-cc-release
-    image: sinlov/drone-gitea-cc-release:1.0.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
+    image: sinlov/drone-gitea-cc-release:1.1.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
     pull: if-not-exists
     settings:
       # debug: true # plugin debug switch
@@ -160,8 +162,8 @@ steps:
 ```bash
 # install at ${GOPATH}/bin
 $ go install -v github.com/convention-change/drone-gitea-cc-release/cmd/drone-gitea-cc-release@latest
-# install version v1.0.0
-$ go install -v github.com/convention-change/drone-gitea-cc-release/cmd/drone-gitea-cc-release@v1.0.0
+# install version v1.1.0
+$ go install -v github.com/convention-change/drone-gitea-cc-release/cmd/drone-gitea-cc-release@v1.1.0
 ```
 
 or download by [github releases](https://github.com/convention-change/drone-gitea-cc-release/releases)
