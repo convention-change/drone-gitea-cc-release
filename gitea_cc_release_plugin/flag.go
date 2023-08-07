@@ -71,6 +71,7 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 
 		PublishPackageGo:     c.Bool(NameGiteaPublishPackageGo),
 		PublishPackagePathGo: publishPackagePathGo,
+		PublishGoRemovePaths: c.StringSlice(NameGiteaPublishGoRemovePaths),
 
 		GiteaDraft:      c.Bool(NameDraft),
 		GiteaPrerelease: c.Bool(NamePrerelease),
@@ -161,6 +162,11 @@ func Flag() []cli.Flag {
 			Name:    NameGiteaPublishPackagePathGo,
 			Usage:   "publish go package is dir to find go.mod, if not set will use git root path, gitea 1.20.1+ support",
 			EnvVars: []string{EnvGiteaPublishPackagePathGo},
+		},
+		&cli.StringSliceFlag{
+			Name:    NameGiteaPublishGoRemovePaths,
+			Usage:   fmt.Sprintf("publish go package remove paths, this path under %s, vars like dist,target/os", NameGiteaPublishPackagePathGo),
+			EnvVars: []string{EnvGiteaPublishGoRemovePaths},
 		},
 
 		&cli.StringFlag{

@@ -95,7 +95,7 @@ func (p *Plugin) Exec() error {
 	}
 
 	if p.Config.PublishPackageGo {
-		errPackageGoUpload, goPkgInfo := rc.PackageGoUpload(p.Config.PublishPackagePathGo)
+		errPackageGoUpload, goPkgInfo := rc.PackageGoUpload(p.Config.PublishPackagePathGo, p.Config.PublishGoRemovePaths)
 		if errPackageGoUpload != nil {
 			if errPackageGoUpload != ErrPackageGoExists {
 				drone_log.Error(errPackageGoUpload)
