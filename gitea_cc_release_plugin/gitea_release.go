@@ -25,6 +25,7 @@ import (
 
 var (
 	ErrMissingTag              = fmt.Errorf("NewReleaseClientByDrone missing tag, please check drone now in tag build")
+	ErrPackageNotExist         = fmt.Errorf("PackageFetch not exist, code 404")
 	ErrPathCanNotLoadGoModFile = fmt.Errorf("path can not load go.mod")
 	ErrPackageGoExists         = fmt.Errorf("package go exists")
 )
@@ -58,6 +59,7 @@ type releaseClient struct {
 	note         string
 
 	uploadFilePaths []string
+	uploadDesc      string
 }
 
 type PackageGoInfo struct {
@@ -71,6 +73,9 @@ func (r *releaseClient) PackageGoUpload(rootPath string) (error, *PackageGoInfo)
 	errGoPkgFetch, exitsPackageInfo := r.PackageGoFetch(rootPath)
 	if errGoPkgFetch != nil {
 		if errGoPkgFetch == ErrPathCanNotLoadGoModFile {
+			return fmt.Errorf("PackageGoUpload PackageGoFetch error: %s", errGoPkgFetch), nil
+		}
+		if errGoPkgFetch != ErrPackageNotExist {
 			return fmt.Errorf("PackageGoUpload PackageGoFetch error: %s", errGoPkgFetch), nil
 		}
 	}
@@ -89,6 +94,8 @@ func (r *releaseClient) PackageGoUpload(rootPath string) (error, *PackageGoInfo)
 		},
 	}
 
+	drone_log.Debugf("try PackageGoUpload outZipPath: %s", outZipPath)
+
 	fileBodyIO, errOpen := os.Open(outZipPath)
 	if errOpen != nil {
 		return fmt.Errorf("open zip file %s , error: %s", outZipPath, errOpen), res
@@ -103,10 +110,10 @@ func (r *releaseClient) PackageGoUpload(rootPath string) (error, *PackageGoInfo)
 	uploadPath := fmt.Sprintf("/api/packages/%s/go/upload", r.owner)
 	statusCode, errPutGoPackage := r.getApiStatusCode("PUT", uploadPath, nil, fileBodyIO)
 	if errPutGoPackage != nil {
-		return fmt.Errorf("put go package [ %s ] err: %v", uploadPath, errPutGoPackage), res
+		return fmt.Errorf("do PackageGoUpload go package [ %s ] err: %v", uploadPath, errPutGoPackage), res
 	}
 	if statusCode != http.StatusCreated {
-		return fmt.Errorf("put go package [ %s ] errcode: %v", uploadPath, statusCode), res
+		return fmt.Errorf("do put go package [ %s ] errcode: %v, zip_path: %s", uploadPath, statusCode, outZipPath), res
 	}
 
 	return nil, res
@@ -163,13 +170,18 @@ func (r *releaseClient) PackageFetch(pkgType, name, version string) (*GiteaPacka
 
 	apiPath := fmt.Sprintf("/api/v1/packages/%s/%s/%s/%s", r.owner, pkgType, pkgName, pkgVersion)
 
+	drone_log.Debugf("try PackageFetch apiPath: %s", apiPath)
+
 	var giteaPackage GiteaPackageInfo
 	resp, err := r.getApiParsedResponse("GET", apiPath, nil, nil, &giteaPackage)
 	if err != nil {
-		return nil, fmt.Errorf("check go package [ %s ] err: %v", apiPath, err)
+		if resp != nil && resp.StatusCode == http.StatusNotFound {
+			return nil, ErrPackageNotExist
+		}
+		return nil, fmt.Errorf("check package type [ %s ] [ %s ] err: %v", pkgType, apiPath, err)
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("check go package [ %s ] errcode: %v", apiPath, resp.StatusCode)
+		return nil, fmt.Errorf("check package type [ %s ] [ %s ] errcode: %v", pkgType, apiPath, resp.StatusCode)
 	}
 	return &giteaPackage, nil
 }
@@ -197,7 +209,11 @@ func (r *releaseClient) BuildRelease() (*gitea.Release, error) {
 
 func (r *releaseClient) UploadFiles(releaseID int64) error {
 	if len(r.uploadFilePaths) == 0 {
-		drone_log.Infof("no upload files found\n")
+		if r.uploadDesc != "" {
+			drone_log.Infof("%s\n", r.uploadDesc)
+			return nil
+		}
+		drone_log.Infof("not setting no upload files found\n")
 		return nil
 	}
 
@@ -305,6 +321,10 @@ func (r *releaseClient) newRelease() (*gitea.Release, error) {
 	return release, nil
 }
 
+func (r *releaseClient) GetUploadDesc() string {
+	return r.uploadDesc
+}
+
 // SetOTP sets OTP for 2FA
 func (r *releaseClient) SetOTP(otp string) {
 	r.mutex.Lock()
@@ -335,12 +355,18 @@ func NewReleaseClientByDrone(drone drone_info.Drone, config Config) (PluginRelea
 		return nil, ErrMissingTag
 	}
 
+	uploadDesc := ""
 	var uploadFiles []string
 	if len(config.GiteaReleaseFileGlobs) > 0 {
 		findFiles, errGlobs := FindFileByGlobs(config.GiteaReleaseFileGlobs, config.GiteaReleaseFileGlobRootPath)
 		if errGlobs != nil {
 			return nil, errGlobs
 		}
+
+		if len(findFiles) == 0 {
+			return nil, fmt.Errorf("not found files by globs: %v , at path: %s", config.GiteaReleaseFileGlobs, config.GiteaReleaseFileGlobRootPath)
+		}
+
 		uploadFiles = findFiles
 
 		if len(config.FilesChecksum) > 0 {
@@ -352,6 +378,8 @@ func NewReleaseClientByDrone(drone drone_info.Drone, config Config) (PluginRelea
 			}
 			uploadFiles = filesCheckRes
 		}
+	} else {
+		uploadDesc = "PLUGIN_RELEASE_GITEA_FILES not setting, skip upload files"
 	}
 
 	httpClient := &http.Client{}
@@ -395,10 +423,13 @@ func NewReleaseClientByDrone(drone drone_info.Drone, config Config) (PluginRelea
 		note:         config.GiteaNote,
 
 		uploadFilePaths: uploadFiles,
+		uploadDesc:      uploadDesc,
 	}, nil
 }
 
 type PluginReleaseClient interface {
+	GetUploadDesc() string
+
 	SetOTP(otp string)
 
 	SetSudo(sudo string)
