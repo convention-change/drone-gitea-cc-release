@@ -463,6 +463,9 @@ type giteaResponse struct {
 func (r *releaseClient) getApiParsedResponse(method, path string, header http.Header, body io.Reader, obj interface{}) (*giteaResponse, error) {
 	data, resp, err := r.getApiResponse(method, path, header, body)
 	if err != nil {
+		if r.debug {
+			fmt.Printf("getApiParsedResponse code %d err: %s\n", resp.StatusCode, err)
+		}
 		return resp, err
 	}
 	return resp, json.Unmarshal(data, obj)
