@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.3.1](https://github.com/convention-change/drone-gitea-cc-release/compare/1.3.0...v1.3.1) (2023-08-07)
+
+### 👷‍ Build System
+
+* github.com/sinlov/drone-info-tools v1.31.0 ([a567aef4](https://github.com/convention-change/drone-gitea-cc-release/commit/a567aef4d2cdef6c22e1c6e4797ab49fd7f513cc))
+
 ## [1.3.0](https://github.com/convention-change/drone-gitea-cc-release/compare/1.2.0...v1.3.0) (2023-08-07)
 
 ### ✨ Features
