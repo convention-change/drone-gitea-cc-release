@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/maps"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -58,7 +59,7 @@ func TestPlugin(t *testing.T) {
 
 		RootFolderPath: envProjectRoot,
 
-		GiteaBaseUrl:  envApiBaseUrl,
+		GiteaBaseUrl:  strings.TrimSuffix(envApiBaseUrl, "/"),
 		GiteaInsecure: envGiteaInsecure,
 		GiteaApiKey:   envGiteaApiKey,
 
