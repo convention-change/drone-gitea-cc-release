@@ -20,6 +20,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -406,7 +407,7 @@ func NewReleaseClientByDrone(drone drone_info.Drone, config Config) (PluginRelea
 	return &releaseClient{
 		client:      client,
 		debug:       config.Debug,
-		url:         config.GiteaBaseUrl,
+		url:         strings.TrimSuffix(config.GiteaBaseUrl, "/"),
 		ctx:         context.Background(),
 		mutex:       &sync.RWMutex{},
 		httpClient:  httpClient,
