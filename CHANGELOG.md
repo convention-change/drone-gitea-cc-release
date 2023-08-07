@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.3.0](https://github.com/convention-change/drone-gitea-cc-release/compare/1.2.0...v1.3.0) (2023-08-07)
+
+### ✨ Features
+
+* add PLUGIN_GITEA_PUBLISH_GO_REMOVE_PATHS when publish go package can remove dir ([69760fdf](https://github.com/convention-change/drone-gitea-cc-release/commit/69760fdfb91c6d40fe4cf5c62c1bd8f19fb0f0ef))
+
 ## [1.2.0](https://github.com/convention-change/drone-gitea-cc-release/compare/1.1.0...v1.2.0) (2023-08-07)
 
 ### ✨ Features
