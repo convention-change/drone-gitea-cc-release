@@ -59,7 +59,7 @@ name: basic-docker
 
 steps:
   - name: gitea-cc-release
-    image: sinlov/drone-gitea-cc-release:1.1.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
+    image: sinlov/drone-gitea-cc-release:1.2.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
     pull: if-not-exists
     settings:
       prerelease: true # default true
@@ -90,7 +90,7 @@ name: basic-docker
 
 steps:
   - name: gitea-cc-release
-    image: sinlov/drone-gitea-cc-release:1.1.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
+    image: sinlov/drone-gitea-cc-release:1.2.0 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
     pull: if-not-exists
     settings:
       # debug: true # plugin debug switch
@@ -164,8 +164,8 @@ steps:
 ```bash
 # install at ${GOPATH}/bin
 $ go install -v github.com/convention-change/drone-gitea-cc-release/cmd/drone-gitea-cc-release@latest
-# install version v1.1.0
-$ go install -v github.com/convention-change/drone-gitea-cc-release/cmd/drone-gitea-cc-release@v1.1.0
+# install version v1.2.0
+$ go install -v github.com/convention-change/drone-gitea-cc-release/cmd/drone-gitea-cc-release@v1.2.0
 ```
 
 or download by [github releases](https://github.com/convention-change/drone-gitea-cc-release/releases)
