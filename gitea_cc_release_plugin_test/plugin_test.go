@@ -112,6 +112,7 @@ func TestPlugin(t *testing.T) {
 
 	p.Config.PublishPackageGo = true
 	p.Config.PublishPackagePathGo = envProjectRoot
+	p.Config.PublishGoRemovePaths = []string{"dist"}
 
 	// verify Plugin
 	err = p.Exec()

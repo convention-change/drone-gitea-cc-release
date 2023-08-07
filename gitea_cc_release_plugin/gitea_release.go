@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/sinlov-go/go-common-lib/pkg/filepath_plus"
 	"github.com/sinlov/drone-info-tools/drone_info"
 	"github.com/sinlov/drone-info-tools/drone_log"
 	"github.com/sinlov/drone-info-tools/drone_urfave_cli_v2/exit_cli"
@@ -69,7 +70,7 @@ type PackageGoInfo struct {
 
 // PackageGoUpload
 // upload go package to gitea after gitea version 1.20.1
-func (r *releaseClient) PackageGoUpload(rootPath string) (error, *PackageGoInfo) {
+func (r *releaseClient) PackageGoUpload(rootPath string, removePath []string) (error, *PackageGoInfo) {
 
 	errGoPkgFetch, exitsPackageInfo := r.PackageGoFetch(rootPath)
 	if errGoPkgFetch != nil {
@@ -82,6 +83,19 @@ func (r *releaseClient) PackageGoUpload(rootPath string) (error, *PackageGoInfo)
 	}
 	if errGoPkgFetch == nil {
 		return ErrPackageGoExists, exitsPackageInfo
+	}
+
+	if len(removePath) > 0 {
+		drone_log.Debugf("try PackageGoUpload removePath: %v", removePath)
+		for _, removePathItem := range removePath {
+			removeFullPath := strings.Replace(removePathItem, "/", string(filepath.Separator), -1)
+			removeFullPath = filepath.Join(rootPath, removeFullPath)
+			errRemovePath := filepath_plus.RmDir(removeFullPath, true)
+			if errRemovePath != nil {
+				return fmt.Errorf("PackageGoUpload removePath: %s, error: %s", removeFullPath, errRemovePath), nil
+			}
+			drone_log.Infof("PackageGoUpload removePath success: %s", removeFullPath)
+		}
 	}
 
 	outZipPath, modFile, errZipGoModPkg := CreateGoModZipFromDir(rootPath, r.tag)
@@ -453,7 +467,7 @@ type PluginReleaseClient interface {
 
 	PackageGoFetch(rootPath string) (error, *PackageGoInfo)
 
-	PackageGoUpload(rootPath string) (error, *PackageGoInfo)
+	PackageGoUpload(rootPath string, removePath []string) (error, *PackageGoInfo)
 }
 
 // giteaResponse represents the gitea response

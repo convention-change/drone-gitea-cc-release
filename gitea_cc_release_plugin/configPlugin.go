@@ -51,6 +51,9 @@ const (
 	EnvGiteaPublishPackagePathGo  = "PLUGIN_GITEA_PUBLISH_PACKAGE_PATH_GO"
 	NameGiteaPublishPackagePathGo = "config.gitea_publish_package_path_go"
 
+	EnvGiteaPublishGoRemovePaths  = "PLUGIN_GITEA_PUBLISH_GO_REMOVE_PATHS"
+	NameGiteaPublishGoRemovePaths = "config.gitea_publish_go_remove_paths"
+
 	EnvTitle  = "PLUGIN_RELEASE_GITEA_TITLE"
 	NameTitle = "config.release_gitea_title"
 
@@ -99,6 +102,7 @@ type (
 
 		PublishPackageGo     bool
 		PublishPackagePathGo string
+		PublishGoRemovePaths []string
 
 		GiteaDraft      bool
 		GiteaPrerelease bool

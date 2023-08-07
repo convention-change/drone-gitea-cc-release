@@ -76,6 +76,7 @@ steps:
       release_gitea_note_by_convention_change: true # default false, like tools https://github.com/convention-change/convention-change-log read change log
       # gitea_publish_package_go: true # gitea 1.20.1+ support publish go package, default false
       # gitea_publish_package_path_go: "" # publish go package dir to find go.mod, if not set will use git root path
+      # gitea_publish_go_remove_paths: ['dist'] # publish go package remove paths, this path under gitea_publish_package_path_go, vars like dist,target
     when:
       event: # https://docs.drone.io/pipeline/exec/syntax/conditions/#by-event
         - tag
@@ -115,6 +116,7 @@ steps:
       # release_gitea_note: "" # if set release_gitea_note_by_convention_change true will cover this
       gitea_publish_package_go: true # gitea 1.20.1+ support publish go package, default false
       gitea_publish_package_path_go: "" # publish go package dir to find go.mod, if not set will use git root path
+      gitea_publish_go_remove_paths: ['dist'] # publish go package remove paths, this path under gitea_publish_package_path_go, vars like dist,target
     when:
       event: # https://docs.drone.io/pipeline/exec/syntax/conditions/#by-event
         - tag
@@ -151,6 +153,7 @@ steps:
       PLUGIN_RELEASE_GITEA_NOTE: "" # if set release_gitea_note_by_convention_change true will cover this
       # PLUGIN_GITEA_PUBLISH_PACKAGE_GO: true # gitea 1.20.1+ support publish go package, default false
       # PLUGIN_GITEA_PUBLISH_PACKAGE_PATH_GO: "" # publish go package dir to find go.mod, if not set will use git root path
+      # PLUGIN_GITEA_PUBLISH_GO_REMOVE_PATHS: "dist" # publish go package remove paths, this path under gitea_publish_package_path_go, vars like dist,target
     commands:
       - ${EXEC_DRONE_GITEA-CC-RELEASE} `
         ""
