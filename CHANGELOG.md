@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.2.0](https://github.com/convention-change/drone-gitea-cc-release/compare/1.1.0...v1.2.0) (2023-08-07)
+
+### ✨ Features
+
+* let api inner gitea api strings.TrimSuffix by `/` ([08cd4011](https://github.com/convention-change/drone-gitea-cc-release/commit/08cd40112da775dde91fb8c99ef11faf93e11002))
+
+* add more log to find upload go package 401 error ([24a551e7](https://github.com/convention-change/drone-gitea-cc-release/commit/24a551e7b3bf98af306eb6874519df886f91a717))
+
+### ♻ Refactor
+
+* add more api debug log to find way api callback error ([6ef58bb3](https://github.com/convention-change/drone-gitea-cc-release/commit/6ef58bb36273017890ebb0543a08c5ad8dd1320d))
+
+### 👷‍ Build System
+
+* github.com/convention-change/convention-change-log v1.4.0 ([2f8293a6](https://github.com/convention-change/drone-gitea-cc-release/commit/2f8293a6f84b6f6f2c87853be6651a27b6c536b0))
+
 ## [1.1.0](https://github.com/convention-change/drone-gitea-cc-release/compare/1.0.1...v1.1.0) (2023-08-06)
 
 ### ✨ Features
