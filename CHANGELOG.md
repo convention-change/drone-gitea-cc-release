@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.4.0](https://github.com/convention-change/drone-gitea-cc-release/compare/1.3.1...v1.4.0) (2023-08-08)
+
+### ✨ Features
+
+* add dry_run support, this mode can check relase ([d5859fd8](https://github.com/convention-change/drone-gitea-cc-release/commit/d5859fd8baff52b8be6152cf3661d5740ed19b00))
+
 ## [1.3.1](https://github.com/convention-change/drone-gitea-cc-release/compare/1.3.0...v1.3.1) (2023-08-07)
 
 ### 👷‍ Build System
