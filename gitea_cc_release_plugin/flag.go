@@ -55,8 +55,11 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 	}
 
 	config := Config{
-		Debug:         debug,
-		TimeoutSecond: c.Uint(NamePluginTimeOut),
+		Debug:           debug,
+		TimeoutSecond:   c.Uint(NamePluginTimeOut),
+		DryRun:          c.Bool(NameDryRun),
+		GiteaDraft:      c.Bool(NameDraft),
+		GiteaPrerelease: c.Bool(NamePrerelease),
 
 		RootFolderPath: rootFolderPath,
 
@@ -73,10 +76,8 @@ func BindCliFlag(c *cli.Context, cliVersion, cliName string, drone drone_info.Dr
 		PublishPackagePathGo: publishPackagePathGo,
 		PublishGoRemovePaths: c.StringSlice(NameGiteaPublishGoRemovePaths),
 
-		GiteaDraft:      c.Bool(NameDraft),
-		GiteaPrerelease: c.Bool(NamePrerelease),
-		GiteaTitle:      c.String(NameTitle),
-		GiteaNote:       note,
+		GiteaTitle: c.String(NameTitle),
+		GiteaNote:  note,
 
 		NoteByConventionChange: c.Bool(NameNoteByConventionChange),
 		ReadChangeLogFile:      changeLogFullPath,
@@ -248,6 +249,12 @@ func CommonFlag() []cli.Flag {
 			EnvVars: []string{drone_info.EnvKeyPluginDebug},
 		},
 
+		&cli.BoolFlag{
+			Name:    NameDryRun,
+			Usage:   "dry run",
+			Value:   false,
+			EnvVars: []string{EnvDryRun},
+		},
 		&cli.BoolFlag{
 			Name:    NameDraft,
 			Usage:   "draft release",

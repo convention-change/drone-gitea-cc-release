@@ -103,7 +103,11 @@ func (p *Plugin) Exec() error {
 			}
 			drone_log.Warnf("package exists go package owner: %s [ %s/%s ], skip upload\n", p.Drone.Repo.OwnerName, goPkgInfo.ModVersion.Path, goPkgInfo.ModVersion.Version)
 		} else {
-			drone_log.Infof("successfully uploaded go package owner: %s [ %s/%s ]\n", p.Drone.Repo.OwnerName, goPkgInfo.ModVersion.Path, goPkgInfo.ModVersion.Version)
+			if p.Config.DryRun {
+				drone_log.Infof("dry run uploaded go package owner: %s [ %s/%s ]\n", p.Drone.Repo.OwnerName, goPkgInfo.ModVersion.Path, goPkgInfo.ModVersion.Version)
+			} else {
+				drone_log.Infof("successfully uploaded go package owner: %s [ %s/%s ]\n", p.Drone.Repo.OwnerName, goPkgInfo.ModVersion.Path, goPkgInfo.ModVersion.Version)
+			}
 		}
 	}
 

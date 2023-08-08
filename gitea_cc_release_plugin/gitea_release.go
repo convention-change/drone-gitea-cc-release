@@ -34,8 +34,10 @@ var (
 
 // Release holds ties the drone env data and gitea client together.
 type releaseClient struct {
-	client     *gitea.Client
-	debug      bool
+	client *gitea.Client
+	debug  bool
+	dryRun bool
+
 	url        string
 	ctx        context.Context
 	mutex      *sync.RWMutex
@@ -123,6 +125,11 @@ func (r *releaseClient) PackageGoUpload(rootPath string, removePath []string) (e
 	}(fileBodyIO)
 
 	uploadPath := fmt.Sprintf("/api/packages/%s/go/upload", r.owner)
+	if r.dryRun {
+		drone_log.Infof("PackageGoUpload dryRun: %s\n", outZipPath)
+		drone_log.Infof("PackageGoUpload uploadPath: %s%s\n", r.url, uploadPath)
+		return nil, res
+	}
 	statusCode, errPutGoPackage := r.getApiStatusCode("PUT", uploadPath, nil, fileBodyIO)
 	if errPutGoPackage != nil {
 		return fmt.Errorf("do PackageGoUpload go package [ %s ] err: %v", uploadPath, errPutGoPackage), res
@@ -211,6 +218,14 @@ func (r *releaseClient) BuildRelease() (*gitea.Release, error) {
 		return release, nil
 	}
 
+	if r.dryRun {
+		drone_log.Infof("try to create release %s/%s\n", r.owner, r.repo)
+		drone_log.Infof("dry run, not creating release\n")
+		return &gitea.Release{
+			ID: -1,
+		}, nil
+	}
+
 	// if no release was found by that tag, create a new one
 	release, err = r.newRelease()
 
@@ -228,7 +243,16 @@ func (r *releaseClient) UploadFiles(releaseID int64) error {
 			drone_log.Infof("%s\n", r.uploadDesc)
 			return nil
 		}
-		drone_log.Infof("not setting no upload files found\n")
+		drone_log.Infof("check settings no upload files found!\n")
+		return nil
+	}
+
+	if r.dryRun {
+		drone_log.Infof("try to upload files to release %s/%s\n", r.owner, r.repo)
+		for _, filePath := range r.uploadFilePaths {
+			drone_log.Infof("-> try upload file: %s\n", filePath)
+		}
+		drone_log.Infof("dry run, not uploading files\n")
 		return nil
 	}
 
@@ -419,8 +443,10 @@ func NewReleaseClientByDrone(drone drone_info.Drone, config Config) (PluginRelea
 	}
 
 	return &releaseClient{
-		client:      client,
-		debug:       config.Debug,
+		client: client,
+		debug:  config.Debug,
+		dryRun: config.DryRun,
+
 		url:         strings.TrimSuffix(config.GiteaBaseUrl, "/"),
 		ctx:         context.Background(),
 		mutex:       &sync.RWMutex{},
