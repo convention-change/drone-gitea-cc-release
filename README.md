@@ -36,7 +36,7 @@ Please read [Contributor Guide](.github/CONTRIBUTING_DOC/CONTRIBUTING.md) for mo
 - [X] support [conventional-commits](https://www.conventionalcommits.org/) log
 - [X] can use dry-run mode (support v1.4.+)
 - [X] publish package support
-    - [X] go package publish, must update gitea:1.20.1+ and set `gitea_publish_package_go` to `true` doc see [https://docs.gitea.com/zh-cn/usage/packages/go](https://docs.gitea.com/zh-cn/usage/packages/go)
+    - [X] go package publish, must update gitea:1.20.1+ and set `gitea_publish_package_go` to `true` doc see [https://docs.gitea.com/usage/packages/go](https://docs.gitea.com/usage/packages/go)
     - [X] when go package publish, can remove folder by `gitea_publish_go_remove_paths` or `PLUGIN_GITEA_PUBLISH_GO_REMOVE_PATHS` (support v1.3.+)
 - [ ] more perfect test case coverage
 - more see [CHANGELOG.md](https://github.com/convention-change/drone-gitea-cc-release/blob/main/CHANGELOG.md)
