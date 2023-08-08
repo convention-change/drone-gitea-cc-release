@@ -11,6 +11,9 @@ const (
 	//msgTypePost        = "post"
 	//msgTypeInteractive = "interactive"
 
+	EnvDryRun  = "PLUGIN_DRY_RUN"
+	NameDryRun = "config.dry_run"
+
 	EnvDraft  = "PLUGIN_DRAFT"
 	NameDraft = "config.draft"
 
@@ -86,8 +89,11 @@ var (
 type (
 	// Config plugin private config
 	Config struct {
-		Debug         bool
-		TimeoutSecond uint
+		Debug           bool
+		TimeoutSecond   uint
+		DryRun          bool
+		GiteaDraft      bool
+		GiteaPrerelease bool
 
 		RootFolderPath string
 
@@ -104,10 +110,8 @@ type (
 		PublishPackagePathGo string
 		PublishGoRemovePaths []string
 
-		GiteaDraft      bool
-		GiteaPrerelease bool
-		GiteaTitle      string
-		GiteaNote       string
+		GiteaTitle string
+		GiteaNote  string
 
 		NoteByConventionChange bool
 		ReadChangeLogFile      string

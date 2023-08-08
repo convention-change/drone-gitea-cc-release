@@ -30,6 +30,7 @@ const (
 
 var (
 	envDebug             = false
+	envDryRun            = false
 	envRunTestFolderPath = ""
 	envProjectRoot       = ""
 	envDroneProto        = "https"
@@ -100,6 +101,7 @@ func init() {
 
 	envDebug = fetchOsEnvBool(drone_info.EnvKeyPluginDebug, false) || fetchOsEnvBool(drone_info.EnvDroneBuildDebug, false)
 
+	envDryRun = fetchOsEnvBool(gitea_cc_release_plugin.EnvDryRun, false)
 	envDroneProto = fetchOsEnvStr("DRONE_PROTO", "https")
 	envDroneHost = fetchOsEnvStr("DRONE_HOST", "")
 	envDroneHostName = fetchOsEnvStr("DRONE_HOST_NAME", "")

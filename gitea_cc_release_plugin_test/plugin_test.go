@@ -56,6 +56,7 @@ func TestPlugin(t *testing.T) {
 	p.Config = gitea_cc_release_plugin.Config{
 		Debug:         envDebug,
 		TimeoutSecond: defTimeoutSecond,
+		DryRun:        envDryRun,
 
 		RootFolderPath: envProjectRoot,
 

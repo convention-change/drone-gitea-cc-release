@@ -63,6 +63,7 @@ steps:
     image: sinlov/drone-gitea-cc-release:1.3.1 # https://hub.docker.com/r/sinlov/drone-gitea-cc-release/tags
     pull: if-not-exists
     settings:
+      # dry_run: false # default false
       prerelease: true # default true
       release_gitea_base_url: https://gitea.xxxx.com
       release_gitea_api_key:
@@ -96,6 +97,7 @@ steps:
     pull: if-not-exists
     settings:
       # debug: true # plugin debug switch
+      # dry_run: false # default false
       prerelease: true # default true
       draft: true # default false
       release_gitea_base_url: https://gitea.xxxx.com
@@ -138,6 +140,7 @@ steps:
   - name: notification-feishu-group-robot-exec # must has env EXEC_DRONE_GITEA-CC-RELEASE and exec tools
     environment:
       # PLUGIN_DEBUG: false
+      PLUGIN_DRY_RUN: false # default false
       PLUGIN_PRERELEASE: true # default true
       PLUGIN_DRAFT: true # default false
       PLUGIN_RELEASE_GITEA_BASE_URL: https://gitea.xxxx.com
