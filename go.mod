@@ -7,7 +7,7 @@ require (
 	github.com/convention-change/convention-change-log v1.4.2
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.3
-	github.com/sinlov-go/go-common-lib v1.4.0
+	github.com/sinlov-go/go-common-lib v1.5.0
 	github.com/sinlov/drone-info-tools v1.31.0
 	github.com/stretchr/testify v1.8.4
 	github.com/urfave/cli/v2 v2.25.7
