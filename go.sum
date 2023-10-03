@@ -107,8 +107,8 @@ github.com/sinlov-go/go-git-tools v1.9.1 h1:ZPRGZo+4fl4MSlDBiP9OfNZjf+MrVruzmkTR
 github.com/sinlov-go/go-git-tools v1.9.1/go.mod h1:OWcVn//uz3xG88iuhXp7bSHzXCOLPko3zHkOnQPLjDk=
 github.com/sinlov-go/sample-markdown v1.4.0 h1:79fVH3Asz7cGvPuPkqMVtPV8FVqoAymqMW0z3extQBU=
 github.com/sinlov-go/sample-markdown v1.4.0/go.mod h1:F9jkQUrZIHLDr2j31PhFbpJUQpwp8CD48QA9DGPP1bY=
-github.com/sinlov/drone-info-tools v1.31.0 h1:0qshZ+tN8X2DROfWeZNVA0Z16tDIX376LTrNf4QB+KY=
-github.com/sinlov/drone-info-tools v1.31.0/go.mod h1:7zWgPUD8cLoz+dbjmZhUvFGoxNrkKvl5e5FprszYGmg=
+github.com/sinlov/drone-info-tools v1.32.0 h1:6rCwZcXoWNlsvS0iJqlYxAZDo6CJqUgdJp0vQfiCUGk=
+github.com/sinlov/drone-info-tools v1.32.0/go.mod h1:7zWgPUD8cLoz+dbjmZhUvFGoxNrkKvl5e5FprszYGmg=
 github.com/sirupsen/logrus v1.7.0/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
 github.com/skeema/knownhosts v1.2.0 h1:h9r9cf0+u7wSE+M183ZtMGgOJKiL96brpaz5ekfJCpM=
 github.com/skeema/knownhosts v1.2.0/go.mod h1:g4fPeYpque7P0xefxtGzV81ihjC8sX2IqpAoNkjxbMo=
