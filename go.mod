@@ -3,7 +3,7 @@ module github.com/convention-change/drone-gitea-cc-release
 go 1.20
 
 require (
-	code.gitea.io/sdk/gitea v0.16.0
+	code.gitea.io/sdk/gitea v0.17.1
 	github.com/convention-change/convention-change-log v1.4.2
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.3
@@ -11,7 +11,7 @@ require (
 	github.com/sinlov/drone-info-tools v1.32.0
 	github.com/stretchr/testify v1.8.4
 	github.com/urfave/cli/v2 v2.27.1
-	golang.org/x/crypto v0.16.0
+	golang.org/x/crypto v0.17.0
 	golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b
 	golang.org/x/mod v0.14.0
 )
@@ -39,7 +39,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/gookit/color v1.5.4 // indirect
-	github.com/hashicorp/go-version v1.5.0 // indirect
+	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.15 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
