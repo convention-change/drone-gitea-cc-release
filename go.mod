@@ -4,12 +4,12 @@ go 1.20
 
 require (
 	code.gitea.io/sdk/gitea v0.17.1
-	github.com/convention-change/convention-change-log v1.5.1
+	github.com/convention-change/convention-change-log v1.7.0
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.3
 	github.com/sinlov-go/go-common-lib v1.6.0
 	github.com/sinlov/drone-info-tools v1.32.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/urfave/cli/v2 v2.27.1
 	golang.org/x/crypto v0.20.0
 	golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b
