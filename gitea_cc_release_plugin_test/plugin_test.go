@@ -5,7 +5,6 @@ import (
 	"github.com/convention-change/drone-gitea-cc-release/gitea_cc_release_plugin"
 	"github.com/sinlov/drone-info-tools/drone_info"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/maps"
 	"os"
 	"strings"
 	"testing"
@@ -153,5 +152,10 @@ func mockUploadFiles(t *testing.T) ([]string, error) {
 		}
 	}
 
-	return maps.Keys(globsFiles), nil
+	var keys []string
+	for k := range globsFiles {
+		keys = append(keys, k)
+	}
+
+	return keys, nil
 }

@@ -19,7 +19,6 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -270,9 +269,9 @@ files:
 			if attachment.Name == filepath.Base(filePath) {
 				switch r.fileExistsDo {
 				case FileExistsDoOverwrite:
-					// do nothing
+					// do nothing now we will delete the old file and upload the new one
 				case FileExistsDoFail:
-					return fmt.Errorf("asset file %s already exists", path.Base(filePath))
+					return fmt.Errorf("asset file %s already exists", filepath.Base(filePath))
 				case FileExistsDoSkip:
 					drone_log.Infof("skipping pre-existing %s artifact\n", attachment.Name)
 					continue files
@@ -292,21 +291,23 @@ files:
 			return fmt.Errorf("failed to read %s artifact: %s", file, errOpen)
 		}
 
+		fileBaseName := filepath.Base(file)
+
 		for _, attachment := range attachments {
-			if attachment.Name == path.Base(file) {
+			if attachment.Name == fileBaseName {
 				if _, err := r.client.DeleteReleaseAttachment(r.owner, r.repo, releaseID, attachment.ID); err != nil {
-					return fmt.Errorf("failed to delete %s artifact: %s", file, err)
+					return fmt.Errorf("failed to delete file base name: %s artifact: %s", fileBaseName, err)
 				}
 
 				drone_log.Infof("successfully deleted old attachment.ID[ %v ] artifact %s\n", attachment.ID, attachment.Name)
 			}
 		}
 
-		if _, _, err = r.client.CreateReleaseAttachment(r.owner, r.repo, releaseID, handle, path.Base(file)); err != nil {
-			return fmt.Errorf("failed to upload %s artifact: %s", file, err)
+		if _, _, err = r.client.CreateReleaseAttachment(r.owner, r.repo, releaseID, handle, fileBaseName); err != nil {
+			return fmt.Errorf("failed to upload file base name: %s artifact: %s", fileBaseName, err)
 		}
 
-		drone_log.Infof("successfully uploaded artifact: %s \n", file)
+		drone_log.Infof("successfully uploaded artifact file name [ %s ] path: %s \n", fileBaseName, file)
 	}
 
 	return nil
@@ -390,7 +391,7 @@ func (r *releaseClient) SetBasicAuth(username, password string) {
 
 func NewReleaseClientByDrone(drone drone_info.Drone, config Config) (PluginReleaseClient, error) {
 
-	if drone.Build.Tag == "" {
+	if drone.Build.Tag == "" && !config.DryRun {
 		return nil, ErrMissingTag
 	}
 
@@ -404,6 +405,11 @@ func NewReleaseClientByDrone(drone drone_info.Drone, config Config) (PluginRelea
 
 		if len(findFiles) == 0 {
 			return nil, fmt.Errorf("not found files by globs: %v , at path: %s", config.GiteaReleaseFileGlobs, config.GiteaReleaseFileGlobRootPath)
+		}
+
+		repetitionFiles := findUploadFileRepetitionByBaseName(findFiles)
+		if len(repetitionFiles) > 0 {
+			return nil, fmt.Errorf("found files repetition by base name, now not support upload, repetition path as\n%s", strings.Join(repetitionFiles, "\n"))
 		}
 
 		uploadFiles = findFiles
@@ -668,4 +674,20 @@ func dataJsonStr(v any, beauty bool) (string, error) {
 		return str.String(), nil
 	}
 	return string(data), nil
+}
+
+// findUploadFileRepetitionByBaseName find upload file base name repetition
+// return duplicates file full path, len 0 is not find
+func findUploadFileRepetitionByBaseName(files []string) []string {
+	seen := make(map[string]bool)
+	var duplicates []string
+	for _, fileFullPath := range files {
+		fileBaseName := filepath.Base(fileFullPath)
+		if seen[fileBaseName] {
+			duplicates = append(duplicates, fileFullPath)
+		} else {
+			seen[fileBaseName] = true
+		}
+	}
+	return duplicates
 }
