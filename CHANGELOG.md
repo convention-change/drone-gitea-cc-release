@@ -2,6 +2,78 @@
 
 All notable changes to this project will be documented in this file. See [convention-change-log](https://github.com/convention-change/convention-change-log) for commit guidelines.
 
+## [1.5.0](https://github.com/convention-change/drone-gitea-cc-release/compare/1.4.0...v1.5.0) (2024-04-18)
+
+### ✨ Features
+
+* check generate file base name dot not duplicates by filebase name ([72c87216](https://github.com/convention-change/drone-gitea-cc-release/commit/72c8721630f69f620fa93c5ce6204eca8af246ae))
+
+### 👷‍ Build System
+
+* update local build and acton of CI config ([3fb66b17](https://github.com/convention-change/drone-gitea-cc-release/commit/3fb66b176f1d5b136e836a64e8d7fed06864f5ab))
+
+* bump golang.org/x/crypto from 0.20.0 to 0.21.0 ([c2fca035](https://github.com/convention-change/drone-gitea-cc-release/commit/c2fca03566796291088f47ae44b58b2f2faa4962))
+
+* bump golang.org/x/mod from 0.15.0 to 0.16.0 ([ad46c696](https://github.com/convention-change/drone-gitea-cc-release/commit/ad46c6966aeea22983c1beedb77b6bdf2283487c))
+
+* bump github.com/sinlov-go/go-common-lib from 1.6.0 to 1.7.0 ([0ab79d99](https://github.com/convention-change/drone-gitea-cc-release/commit/0ab79d9969068c20e6b23bcfeb2e02a757d03486))
+
+* bump github.com/convention-change/convention-change-log ([cc96be8d](https://github.com/convention-change/drone-gitea-cc-release/commit/cc96be8d9009f005aae97a2dd0c165f2ab52de91))
+
+* bump github.com/sinlov-go/go-common-lib from 1.5.0 to 1.6.0 ([e5920ae1](https://github.com/convention-change/drone-gitea-cc-release/commit/e5920ae19ac97decd04172a0f67662f2764c1829))
+
+* bump golang.org/x/mod from 0.14.0 to 0.15.0 ([abff127a](https://github.com/convention-change/drone-gitea-cc-release/commit/abff127aee28a0ea47b1b3e76166147ffa0b52fc))
+
+* bump golang.org/x/crypto from 0.17.0 to 0.20.0 ([bdedf7c0](https://github.com/convention-change/drone-gitea-cc-release/commit/bdedf7c09985602eba0c75a6604f87b74250f400))
+
+* bump golangci/golangci-lint-action from 3 to 4 ([9b769b53](https://github.com/convention-change/drone-gitea-cc-release/commit/9b769b53da738bb23ec378dbab4303960615dd58))
+
+* bump github.com/convention-change/convention-change-log ([5891dfc9](https://github.com/convention-change/drone-gitea-cc-release/commit/5891dfc93003275262a6f41059eb243b4a43efaa))
+
+* bump actions/setup-go from 4 to 5 ([f33a1414](https://github.com/convention-change/drone-gitea-cc-release/commit/f33a14142d7ead12673c251713d190456cab62df))
+
+* bump code.gitea.io/sdk/gitea from 0.16.0 to 0.17.1 ([9c07dadc](https://github.com/convention-change/drone-gitea-cc-release/commit/9c07dadcca103568b07c65caaef861ac86bbe0c1))
+
+* bump actions/download-artifact from 3 to 4 ([d36f2f30](https://github.com/convention-change/drone-gitea-cc-release/commit/d36f2f30852b03345303a689086e9ad281d5a617))
+
+* bump actions/upload-artifact from 3 to 4 ([e60caf41](https://github.com/convention-change/drone-gitea-cc-release/commit/e60caf41443aff950c553592db25bd3940fa3029))
+
+* bump github.com/urfave/cli/v2 from 2.25.7 to 2.27.1 ([fa96bc7e](https://github.com/convention-change/drone-gitea-cc-release/commit/fa96bc7e23af9cc18cc6b5b9814c1df4aba7fa18))
+
+* change golangci/golangci-lint-action use version latest ([2f0d5bc8](https://github.com/convention-change/drone-gitea-cc-release/commit/2f0d5bc865a8e9a68ce54c8f208be69651b5a484))
+
+* bump golang.org/x/crypto from 0.14.0 to 0.16.0 ([dfa359fd](https://github.com/convention-change/drone-gitea-cc-release/commit/dfa359fdcd9f02502af1311935ea4dd5d1836c11))
+
+* bump golang.org/x/mod from 0.12.0 to 0.14.0 ([5642a4a3](https://github.com/convention-change/drone-gitea-cc-release/commit/5642a4a300cce05baed40c0582871ba4e840ef45))
+
+* bump golang.org/x/crypto from 0.13.0 to 0.14.0 ([72894938](https://github.com/convention-change/drone-gitea-cc-release/commit/728949384a3e6b5a754f744ec8ea5690ce95620a))
+
+* change make dep task, remove modVendor ([7ee75db4](https://github.com/convention-change/drone-gitea-cc-release/commit/7ee75db4ea65039c5cb69c3ada9365e53ac9b1b3))
+
+* bump github.com/sinlov/drone-info-tools ([793adb8e](https://github.com/convention-change/drone-gitea-cc-release/commit/793adb8eecbbee22b81fef572b0b943f420e26c1))
+
+* bump docker/metadata-action from 4 to 5 ([6e3dfd2f](https://github.com/convention-change/drone-gitea-cc-release/commit/6e3dfd2f528af69d09101f4f7245e5bb0c596795))
+
+* bump golang.org/x/crypto from 0.12.0 to 0.13.0 ([35e6f21b](https://github.com/convention-change/drone-gitea-cc-release/commit/35e6f21b0dbd6139c975d85f72b99df89d6b2287))
+
+* bump code.gitea.io/sdk/gitea from 0.15.1 to 0.16.0 ([cabfd8ff](https://github.com/convention-change/drone-gitea-cc-release/commit/cabfd8ff848fac3abcb836b4a427d3d71ab8d868))
+
+* bump github.com/sinlov-go/go-common-lib from 1.4.0 to 1.5.0 ([856c5804](https://github.com/convention-change/drone-gitea-cc-release/commit/856c58046be24f727f528a45c7ac79827e2e3b33))
+
+* bump docker/setup-buildx-action from 2 to 3 ([32fa126b](https://github.com/convention-change/drone-gitea-cc-release/commit/32fa126b06ea7cc18ce2e76eb9b1a6aa984a88e8))
+
+* bump actions/checkout from 3 to 4 ([de45039e](https://github.com/convention-change/drone-gitea-cc-release/commit/de45039e63ffdde7b02dc119d1fbc45414a5b846))
+
+* bump docker/setup-qemu-action from 2 to 3 ([533c7aa8](https://github.com/convention-change/drone-gitea-cc-release/commit/533c7aa85126e468fed3df56d5e58324240c29fb))
+
+* bump docker/login-action from 2 to 3 ([e35c129d](https://github.com/convention-change/drone-gitea-cc-release/commit/e35c129d8cbf70a6fbe035cd359a784b6754eca4))
+
+* bump docker/build-push-action from 4 to 5 ([37412a45](https://github.com/convention-change/drone-gitea-cc-release/commit/37412a45d3f11bf65a7de51eb625f9cc30e0d093))
+
+* bump github.com/convention-change/convention-change-log ([b2ba449c](https://github.com/convention-change/drone-gitea-cc-release/commit/b2ba449c7995cdc8d4a63fd933ffdd59bfc3a6de))
+
+* bump golang.org/x/crypto from 0.11.0 to 0.12.0 ([23888522](https://github.com/convention-change/drone-gitea-cc-release/commit/2388852256b651513334e72289f5e10640d8656d))
+
 ## [1.4.0](https://github.com/convention-change/drone-gitea-cc-release/compare/1.3.1...v1.4.0) (2023-08-08)
 
 ### ✨ Features
