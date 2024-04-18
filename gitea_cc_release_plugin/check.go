@@ -105,7 +105,15 @@ func WriteChecksumsByFiles(files, methods []string, root string) ([]string, erro
 
 	for method, results := range checksums {
 		filename := method + "sum.txt"
-		f, err := os.Create(filename)
+		savePath := filepath.Join(root, filename)
+		saveDir := filepath.Dir(savePath)
+		if !pathExistsFast(saveDir) {
+			errMkSaveDir := mkdir(saveDir)
+			if errMkSaveDir != nil {
+				return nil, errMkSaveDir
+			}
+		}
+		f, err := os.Create(savePath)
 
 		if err != nil {
 			return nil, err
@@ -118,12 +126,13 @@ func WriteChecksumsByFiles(files, methods []string, root string) ([]string, erro
 				file = strings.Replace(file, root, "", -1)
 			}
 
-			if _, errWrite := f.WriteString(fmt.Sprintf("%s  %s\n", hash, file)); errWrite != nil {
+			fileBaseName := filepath.Base(file)
+			if _, errWrite := f.WriteString(fmt.Sprintf("%s  %s\n", hash, fileBaseName)); errWrite != nil {
 				return nil, errWrite
 			}
 		}
 
-		files = append(files, filename)
+		files = append(files, savePath)
 	}
 
 	return files, nil
@@ -140,7 +149,7 @@ func FindFileByGlobs(globs []string, root string) ([]string, error) {
 		for _, glob := range globs {
 			globed, errGlob := WalkAllByGlob(root, glob, true)
 			if errGlob != nil {
-				errGlobFind := fmt.Errorf("from glob find %s failed: %v", glob, errGlob)
+				errGlobFind := fmt.Errorf("from glob find %s path: %s ,failed: %v", glob, root, errGlob)
 				return nil, errGlobFind
 			}
 			if globed != nil {
@@ -186,4 +195,31 @@ func WalkAllByGlob(path string, glob string, ignoreFolder bool) ([]string, error
 	}
 
 	return files, nil
+}
+
+// pathExists path exists
+func pathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+// pathExistsFast path exists fast
+func pathExistsFast(path string) bool {
+	exists, _ := pathExists(path)
+	return exists
+}
+
+// mkdir will use FileMode 0766
+func mkdir(path string) error {
+	err := os.MkdirAll(path, os.FileMode(0766))
+	if err != nil {
+		return fmt.Errorf("fail MkdirAll at path: %s , err: %v", path, err)
+	}
+	return nil
 }
