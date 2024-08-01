@@ -3,7 +3,7 @@ module github.com/convention-change/drone-gitea-cc-release
 go 1.20
 
 require (
-	code.gitea.io/sdk/gitea v0.18.0
+	code.gitea.io/sdk/gitea v0.19.0
 	github.com/convention-change/convention-change-log v1.8.1
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.3
