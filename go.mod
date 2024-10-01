@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	code.gitea.io/sdk/gitea v0.18.0
-	github.com/convention-change/convention-change-log v1.8.2
+	github.com/convention-change/convention-change-log v1.10.1
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.5
 	github.com/sinlov-go/go-common-lib v1.7.1
