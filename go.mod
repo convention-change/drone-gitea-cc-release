@@ -10,7 +10,7 @@ require (
 	github.com/sinlov-go/go-common-lib v1.7.1
 	github.com/sinlov/drone-info-tools v1.32.0
 	github.com/stretchr/testify v1.9.0
-	github.com/urfave/cli/v2 v2.27.4
+	github.com/urfave/cli/v2 v2.27.5
 	golang.org/x/crypto v0.28.0
 	golang.org/x/mod v0.21.0
 )
@@ -26,7 +26,7 @@ require (
 	github.com/bar-counter/slog v1.4.0 // indirect
 	github.com/chainguard-dev/git-urls v1.0.2 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
