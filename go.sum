@@ -26,8 +26,8 @@ github.com/chainguard-dev/git-urls v1.0.2/go.mod h1:rbGgj10OS7UgZlbzdUQIQpT0k/D4
 github.com/cloudflare/circl v1.3.3/go.mod h1:5XYMA4rFBvNIrhs50XuiBJ15vF2pZn4nnUKZrLbUZFA=
 github.com/cloudflare/circl v1.3.7 h1:qlCDlTPz2n9fu58M0Nh1J/JzcFpfgkFHHX3O35r5vcU=
 github.com/cloudflare/circl v1.3.7/go.mod h1:sRTcRWXGLrKw6yIGJ+l7amYJFfAXbZG0kBSc8r4zxgA=
-github.com/convention-change/convention-change-log v1.10.1 h1:NjjK7/6kcApSAjrs5OsTuGQ94LnoVjxeG+fsyLXyeiI=
-github.com/convention-change/convention-change-log v1.10.1/go.mod h1:LhYZ/B6xP3vfjsuq3oHJ0KX+9cigPrxoe2da6/8vHTk=
+github.com/convention-change/convention-change-log v1.11.1 h1:Q6sZy6mDnqHAbBz82RmXfH5xO0pGc+Z4cyEBIQOaYMY=
+github.com/convention-change/convention-change-log v1.11.1/go.mod h1:LhYZ/B6xP3vfjsuq3oHJ0KX+9cigPrxoe2da6/8vHTk=
 github.com/cpuguy83/go-md2man/v2 v2.0.4 h1:wfIWP927BUkWJb2NmU/kNDYIBTh/ziUX91+lVfRxZq4=
 github.com/cpuguy83/go-md2man/v2 v2.0.4/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/cyphar/filepath-securejoin v0.2.4 h1:Ugdm7cg7i6ZK6x3xDF1oEu1nfkyfH53EtKeQYTC3kyg=
