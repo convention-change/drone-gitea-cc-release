@@ -3,7 +3,7 @@ module github.com/convention-change/drone-gitea-cc-release
 go 1.20
 
 require (
-	code.gitea.io/sdk/gitea v0.18.0
+	code.gitea.io/sdk/gitea v0.20.0
 	github.com/convention-change/convention-change-log v1.11.1
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.5
@@ -17,6 +17,7 @@ require (
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
+	github.com/42wim/httpsig v1.2.1 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.3 // indirect
