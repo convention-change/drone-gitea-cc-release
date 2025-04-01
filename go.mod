@@ -10,7 +10,7 @@ require (
 	github.com/sinlov-go/go-common-lib v1.7.1
 	github.com/sinlov/drone-info-tools v1.32.0
 	github.com/stretchr/testify v1.10.0
-	github.com/urfave/cli/v2 v2.27.5
+	github.com/urfave/cli/v2 v2.27.6
 	golang.org/x/crypto v0.35.0
 	golang.org/x/mod v0.23.0
 )
