@@ -1,13 +1,13 @@
 module github.com/convention-change/drone-gitea-cc-release
 
-go 1.20
+go 1.23.0
 
 require (
 	code.gitea.io/sdk/gitea v0.21.0
 	github.com/convention-change/convention-change-log v1.13.1
 	github.com/joho/godotenv v1.5.1
 	github.com/sebdah/goldie/v2 v2.5.5
-	github.com/sinlov-go/go-common-lib v1.7.1
+	github.com/sinlov-go/go-common-lib v1.9.0
 	github.com/sinlov/drone-info-tools v1.32.0
 	github.com/stretchr/testify v1.10.0
 	github.com/urfave/cli/v2 v2.27.6
