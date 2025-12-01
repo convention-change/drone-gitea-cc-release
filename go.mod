@@ -6,7 +6,7 @@ require (
 	code.gitea.io/sdk/gitea v0.22.0
 	github.com/convention-change/convention-change-log v1.13.2
 	github.com/joho/godotenv v1.5.1
-	github.com/sebdah/goldie/v2 v2.5.5
+	github.com/sebdah/goldie/v2 v2.8.0
 	github.com/sinlov-go/go-common-lib v1.9.0
 	github.com/sinlov/drone-info-tools v1.32.0
 	github.com/stretchr/testify v1.11.1
