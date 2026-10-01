@@ -1,6 +1,6 @@
 module github.com/convention-change/drone-gitea-cc-release
 
-go 1.26
+go 1.26.0
 
 require (
 	code.gitea.io/sdk/gitea v0.24.1
@@ -12,7 +12,7 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/crypto v0.55.0
-	golang.org/x/mod v0.40.0
+	golang.org/x/mod v0.41.0
 )
 
 require (
