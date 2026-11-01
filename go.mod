@@ -12,7 +12,7 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli/v2 v2.27.7
 	golang.org/x/crypto v0.57.0
-	golang.org/x/mod v0.41.0
+	golang.org/x/mod v0.42.0
 )
 
 require (
